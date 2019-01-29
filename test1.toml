@@ -1,0 +1,142 @@
+# Main switch
+[[switches]]
+dpid = 12345678
+
+# --- main switch meters ---
+
+    # meter 1
+    [[switches.meters]]
+    dpid = 12345678
+    flags = ["KBPS"]
+    meter_id = 1
+
+        [[switches.meters.bands]]
+        type = "DROP"
+        rate = 300000
+
+    # meter 2
+    [[switches.meters]]
+    dpid = 12345678
+    flags = ["KBPS"]
+    meter_id = 2
+
+        [[switches.meters.bands]]
+        type = "DROP"
+        rate = 300000
+
+    # meter 3
+    [[switches.meters]]
+    dpid = 12345678
+    flags = ["KBPS"]
+    meter_id = 3
+
+        [[switches.meters.bands]]
+        type = "DROP"
+        rate = 500000
+
+    # meter 4
+    [[switches.meters]]
+    dpid = 12345678
+    flags = ["KBPS"]
+    meter_id = 4
+
+        [[switches.meters.bands]]
+        type = "DROP"
+        rate = 500000
+
+
+# --- main switch flows ---
+
+    # ARP flow
+    [[switches.flows]]
+    dpid = 12345678
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2054
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = "FLOOD"
+
+    # H1H3 flow
+    [[switches.flows]]
+    dpid = 12345678
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.1"
+        ipv4_dst = "192.168.2.3"
+
+        [[switches.flows.actions]]
+        type = "METER"
+        meter_id = 1
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # H3H1 flow
+    [[switches.flows]]
+    dpid = 12345678
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.3"
+        ipv4_dst = "192.168.2.1"
+
+        [[switches.flows.actions]]
+        type = "METER"
+        meter_id = 2
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 1
+
+    # H2H3 flow
+    [[switches.flows]]
+    dpid = 12345678
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.2"
+        ipv4_dst = "192.168.2.3"
+
+        [[switches.flows.actions]]
+        type = "METER"
+        meter_id = 3
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # H3H2 flow
+    [[switches.flows]]
+    dpid = 12345678
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.3"
+        ipv4_dst = "192.168.2.2"
+
+        [[switches.flows.actions]]
+        type = "METER"
+        meter_id = 4
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 2
