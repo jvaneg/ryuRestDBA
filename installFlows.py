@@ -9,13 +9,34 @@ def main(args):
 
     pp = pprint.PrettyPrinter(indent=2)
 
-    try:
-        with Path(args.configFile).open() as configFile:
-            config = toml.load(configFile)
-            pp.pprint(config)
-    except Exception as error:
+    if(not Path(args.configFile).is_file()):
         print("Error loading config file")
         exit(-1)
+
+    
+    with Path(args.configFile).open() as configFile:
+        config = toml.load(configFile)
+        pp.pprint(config)
+    
+        for switch in config["switches"]:
+            pp.pprint(switch)
+            
+            installMeters(switch)
+            installFlows(switch)
+
+def installMeters(switch):
+
+    pp = pprint.PrettyPrinter(indent=2)
+
+    for meter in switch["meters"]:
+        pp.pprint(meter)
+
+def installFlows(switch):
+
+    pp = pprint.PrettyPrinter(indent=2)
+
+    for flow in switch["flows"]:
+        pp.pprint(flow)
 
 
 
