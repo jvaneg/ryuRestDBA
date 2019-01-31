@@ -18,26 +18,43 @@ def main(args):
         config = toml.load(configFile)
         pp.pprint(config)
     
-        for switch in config["switches"]:
-            pp.pprint(switch)
-            
-            installMeters(switch)
-            installFlows(switch)
+    switches = {}
 
-def installMeters(switch):
+    for switchConfig in config["switches"]:
+        pp.pprint(switchConfig)
+
+        #switch = RyuSwitch(switchConfig["dpid"])
+        switch = None
+        switches[switchConfig["dpid"]] = switch
+
+        installQueues(switchConfig, switch)
+        installMeters(switchConfig["meters"], switch)
+        installFlows(switchConfig["flows"], switch)
+
+    print(switches)
+
+def installMeters(meterConfigs, switch):
 
     pp = pprint.PrettyPrinter(indent=2)
 
-    for meter in switch["meters"]:
-        pp.pprint(meter)
+    for meterConfig in meterConfigs:
+        pp.pprint(meterConfig)
 
-def installFlows(switch):
+        #switch.add_meter(meterConfig)
+
+def installFlows(flowConfigs, switch):
 
     pp = pprint.PrettyPrinter(indent=2)
 
-    for flow in switch["flows"]:
-        pp.pprint(flow)
+    for flowConfig in flowConfigs:
+        pp.pprint(flowConfig)
 
+        #switch.add_flow(flowConfig)
+
+# Installing queues is not supported by the ryu rest API, so currently this calls a bash subprocess
+def installQueues(switchConfig, switch):
+    #do nothing
+    return
 
 
 
