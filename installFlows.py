@@ -34,9 +34,9 @@ def setupSwitch(configFileName):
     switches = {}
 
     for switchConfig in config["switches"]:
-        pp.pprint(switchConfig)
+        #pp.pprint(switchConfig)
 
-        #switch = RyuSwitch(switchConfig["dpid"])
+        switch = RyuSwitch(switchConfig["dpid"])
         switch = None
         switches[switchConfig["dpid"]] = (switch, switchConfig["meters"], switchConfig["flows"])
 
@@ -53,8 +53,8 @@ def installMeters(meterConfigs, switch):
     pp = pprint.PrettyPrinter(indent=2)
 
     for meterConfig in meterConfigs:
-        pp.pprint(meterConfig)
-        #switch.add_meter(meterConfig)
+        #pp.pprint(meterConfig)
+        switch.add_meter(meterConfig)
 
     return
 
@@ -65,8 +65,8 @@ def installFlows(flowConfigs, switch):
     pp = pprint.PrettyPrinter(indent=2)
 
     for flowConfig in flowConfigs:
-        pp.pprint(flowConfig)
-        #switch.add_flow(flowConfig)
+        #pp.pprint(flowConfig)
+        switch.add_flow(flowConfig)
 
     return
 
