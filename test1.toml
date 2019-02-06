@@ -1,6 +1,6 @@
 # Main switch
 [[switches]]
-dpid = 12345678
+dpid = 1
 
 # --- main switch queues ---
 
@@ -12,7 +12,7 @@ dpid = 12345678
 
     # meter 1
     [[switches.meters]]
-    dpid = 12345678
+    dpid = 1
     flags = ["KBPS"]
     meter_id = 1
 
@@ -22,7 +22,7 @@ dpid = 12345678
 
     # meter 2
     [[switches.meters]]
-    dpid = 12345678
+    dpid = 1
     flags = ["KBPS"]
     meter_id = 2
 
@@ -32,7 +32,7 @@ dpid = 12345678
 
     # meter 3
     [[switches.meters]]
-    dpid = 12345678
+    dpid = 1
     flags = ["KBPS"]
     meter_id = 3
 
@@ -42,7 +42,7 @@ dpid = 12345678
 
     # meter 4
     [[switches.meters]]
-    dpid = 12345678
+    dpid = 1
     flags = ["KBPS"]
     meter_id = 4
 
@@ -55,7 +55,7 @@ dpid = 12345678
 
     # ARP flow
     [[switches.flows]]
-    dpid = 12345678
+    dpid = 1
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -69,7 +69,7 @@ dpid = 12345678
 
     # H1H3 flow
     [[switches.flows]]
-    dpid = 12345678
+    dpid = 1
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -89,7 +89,7 @@ dpid = 12345678
 
     # H3H1 flow
     [[switches.flows]]
-    dpid = 12345678
+    dpid = 1
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -109,7 +109,7 @@ dpid = 12345678
 
     # H2H3 flow
     [[switches.flows]]
-    dpid = 12345678
+    dpid = 1
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -129,7 +129,7 @@ dpid = 12345678
 
     # H3H2 flow
     [[switches.flows]]
-    dpid = 12345678
+    dpid = 1
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
