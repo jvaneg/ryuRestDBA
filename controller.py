@@ -36,6 +36,8 @@ def main(args):
         for flow in flow_list:
             flow_bandwidth_display += "{}\t".format(flow.get_bandwidth())
 
+        flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
+
         time.sleep(2)
 
     # loop forever
