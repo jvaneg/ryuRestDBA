@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-import install
+import switchTools
 
 from ryuswitch import RyuSwitch
 
@@ -12,7 +12,7 @@ def main(args):
         exit(-1)
 
     # setup switches
-    switch_list = install.setup_switch(args.config_file)
+    switch_list = switchTools.setup_switch(args.config_file)
 
     print(switch_list)
 
