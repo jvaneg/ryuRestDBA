@@ -1,0 +1,29 @@
+import argparse
+from pathlib import Path
+
+import install
+
+from ryuswitch import RyuSwitch
+
+
+def main(args):
+    if(not Path(args.config_file).is_file()):
+        print("Error loading config file")
+        exit(-1)
+
+    # setup switches
+    switches = install.setup_switch(args.config_file)
+
+    # loop forever
+    #   poll flows
+    #   calculate bandwidth usage (target bandwidth)
+    #   calculate tier 2 meter maximums (dependent on algorithm)
+    #   modify tier 2 meters structures
+    #   install changes on switch
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config_file", help="the config file describing the flows and switches")
+    args = parser.parse_args()
+    main(args)

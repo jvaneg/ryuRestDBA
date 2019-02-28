@@ -6,7 +6,7 @@ dpid = 1
 
     # bash script to install queues
     [switches.queues]
-    queueScript = "t1_s1_queues.sh"
+    queue_script = "t1_s1_queues.sh"
 
 # --- main switch meters ---
 
@@ -53,23 +53,29 @@ dpid = 1
 
 # --- main switch flows ---
 
+    # --- static flows (installed and then left untouched by the controller) ---
+
     # ARP flow
-    [[switches.flows]]
+    [[switches.static_flows]]
     dpid = 1
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
 
-        [switches.flows.match]
+        [switches.static_flows.match]
         eth_type = 2054
 
-        [[switches.flows.actions]]
+        [[switches.static_flows.actions]]
         type = "OUTPUT"
         port = "FLOOD"
+
+
+    # --- main flows (controller will calculate the bandwidth for these) ---
 
     # H1H3 flow
     [[switches.flows]]
     dpid = 1
+    cookie = 1
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -90,6 +96,7 @@ dpid = 1
     # H3H1 flow
     [[switches.flows]]
     dpid = 1
+    cookie = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -110,6 +117,7 @@ dpid = 1
     # H2H3 flow
     [[switches.flows]]
     dpid = 1
+    cookie = 3
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -130,6 +138,7 @@ dpid = 1
     # H3H2 flow
     [[switches.flows]]
     dpid = 1
+    cookie = 4
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0

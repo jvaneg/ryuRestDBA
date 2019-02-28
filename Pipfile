@@ -4,6 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+flake8 = "*"
+flake8-import-order = "*"
+flake8-blind-except = "*"
+flake8-builtins = "*"
+flake8-commas = "*"
+flake8-bugbear = "*"
+flake8-pytest = "*"
+pep8-naming = "*"
 
 [packages]
 toml = "*"

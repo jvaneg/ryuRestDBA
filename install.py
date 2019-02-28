@@ -1,4 +1,3 @@
-import argparse
 import pprint
 import subprocess
 from pathlib import Path
@@ -6,22 +5,6 @@ from pathlib import Path
 from ryuswitch import RyuSwitch
 
 import toml
-
-
-def main(args):
-    if(not Path(args.configFile).is_file()):
-        print("Error loading config file")
-        exit(-1)
-
-    # setup switches
-    switches = setup_switch(args.configFile)
-
-    # loop forever
-    #   poll flows
-    #   calculate bandwidth usage (target bandwidth)
-    #   calculate tier 2 meter maximums (dependent on algorithm)
-    #   modify tier 2 meters structures
-    #   install changes on switch
 
 
 # Sets up the queues, meters, and flows for each switch
@@ -43,6 +26,7 @@ def setup_switch(config_file_name):
 
         install_queues(switch_config["queues"])
         install_meters(switch_config["meters"], switch)
+        install_flows(switch_config["static_flows"], switch)
         install_flows(switch_config["flows"], switch)
 
     return switches
@@ -53,9 +37,12 @@ def install_meters(meter_configs, switch):
 
     pp = pprint.PrettyPrinter(indent=2)
 
+    print("\n---Meters---")
     for meter_config in meter_configs:
-        # pp.pprint(meterConfig)
-        switch.add_meter(meter_config)
+        print("Meter id: {}".format(meter_config["meter_id"]))
+        pp.pprint(meter_config)
+        
+        # switch.add_meter(meter_config)
 
     return
 
@@ -65,9 +52,15 @@ def install_flows(flow_configs, switch):
 
     pp = pprint.PrettyPrinter(indent=2)
 
+    print("\n---Flows---")
     for flow_config in flow_configs:
-        # pp.pprint(flowConfig)
-        switch.add_flow(flow_config)
+        try:
+            print("Flow id: {}".format(flow_config["cookie"]))
+        except Exception:
+            print("not an id'd flow")
+        pp.pprint(flow_config)
+        
+        # switch.add_flow(flow_config)
 
     return
 
@@ -75,14 +68,8 @@ def install_flows(flow_configs, switch):
 # Installing queues is not supported by the ryu rest API, so currently this calls a bash subprocess
 def install_queues(queue_configs):
     # do nothing
-    output = subprocess.check_output(["bash", str(queue_configs["queueScript"])])
+    print("\n---Queues---")
+    output = subprocess.check_output(["bash", str(queue_configs["queue_script"])])
     print(str(output, "utf-8"))
 
     return
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("config file", help="the config file describing the flows and switches")
-    args = parser.parse_args()
-    main(args)
