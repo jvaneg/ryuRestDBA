@@ -41,8 +41,8 @@ def install_meters(meter_configs, switch):
     for meter_config in meter_configs:
         print("Meter id: {}".format(meter_config["meter_id"]))
         pp.pprint(meter_config)
-        
-        # switch.add_meter(meter_config)
+
+        switch.add_meter(meter_config)
 
     return
 
@@ -60,7 +60,7 @@ def install_flows(flow_configs, switch):
             print("not an id'd flow")
         pp.pprint(flow_config)
         
-        # switch.add_flow(flow_config)
+        switch.add_flow(flow_config)
 
     return
 
