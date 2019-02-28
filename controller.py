@@ -12,7 +12,9 @@ def main(args):
         exit(-1)
 
     # setup switches
-    switches = install.setup_switch(args.config_file)
+    switch_list = install.setup_switch(args.config_file)
+
+    print(switch_list)
 
     # loop forever
     #   poll flows
