@@ -28,8 +28,8 @@ def setup_switch(config_file_name):
 
         install_queues(switch_config["queues"])
         meter_list = install_meters(switch_config["meters"], switch)
-        install_flows(switch_config["static_flows"], switch)
-        flow_list = install_flows(switch_config["flows"], switch)
+        install_flows(switch_config["static_flows"], switch, False)
+        flow_list = install_flows(switch_config["flows"], switch, True)
 
         switch_list[switch_config["dpid"]] = (switch, meter_list, flow_list)
 
@@ -56,7 +56,7 @@ def install_meters(meter_configs, switch):
 
 
 # Installs the flows onto the switch
-def install_flows(flow_configs, switch):
+def install_flows(flow_configs, switch, save_results):
 
     pp = pprint.PrettyPrinter(indent=2)
 
@@ -71,10 +71,15 @@ def install_flows(flow_configs, switch):
         pp.pprint(flow_config)
 
         switch.add_flow(flow_config)
-        flow = Flow(flow_config)
-        flow_list[flow.get_id()] = flow
 
-    return flow_list
+        if(save_results):
+            flow = Flow(flow_config)
+            flow_list[flow.get_id()] = flow
+
+    if(save_results):
+        return flow_list
+    else:
+        return None
 
 
 # Installing queues is not supported by the ryu rest API, so currently this calls a bash subprocess
