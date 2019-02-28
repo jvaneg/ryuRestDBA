@@ -1,4 +1,5 @@
 import argparse
+from datetime import datetime
 from pathlib import Path
 
 import switchTools
@@ -16,7 +17,10 @@ def main(args):
 
     print(switch_list)
 
-    flow_stats = switchTools.get_flow_stats(switch_list[1][0])
+    flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
+
+    print(timestamp)
+    print(flow_bytes)
 
     # loop forever
     #   poll flows

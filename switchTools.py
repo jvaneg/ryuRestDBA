@@ -1,5 +1,6 @@
 import pprint
 import subprocess
+from datetime import datetime
 from pathlib import Path
 
 from flow import Flow
@@ -94,10 +95,19 @@ def install_queues(queue_configs):
 
 def get_flow_stats(switch):
 
-    pp = pprint.PrettyPrinter(indent=2)
-
     flow_stats = switch.get_flows()
 
-    pp.pprint(flow_stats)
+    return flow_stats[str(switch.DPID)], datetime.now
 
-    return flow_stats
+
+def get_flow_bytes(switch):
+
+    all_flow_stats, timestamp = get_flow_stats(switch)
+
+    flow_bytes = {}
+
+    for flow_stat in all_flow_stats:
+        if(flow_stat["cookie"] > 0):
+            flow_bytes[flow_stat["cookie"]] = flow_stat["byte_count"]
+
+    return flow_bytes, timestamp
