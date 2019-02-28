@@ -32,9 +32,13 @@ def setup_switch(config_file_name):
         install_flows(switch_config["static_flows"], switch, False)
         flow_list = install_flows(switch_config["flows"], switch, True)
 
-        switch_list[switch_config["dpid"]] = (switch, meter_list, flow_list)
+        switch_list[switch_config["dpid"]] = (switch, sorted(meter_list, sort_by_id), sorted(flow_list, sort_by_id))
 
     return switch_list
+
+
+def sort_by_id(elem):
+    return elem.get_id()
 
 
 # Installs the meters onto the switch
@@ -42,7 +46,7 @@ def install_meters(meter_configs, switch):
 
     pp = pprint.PrettyPrinter(indent=2)
 
-    meter_list = {}
+    meter_list = []
 
     print("\n---Meters---")
     for meter_config in meter_configs:
@@ -51,7 +55,7 @@ def install_meters(meter_configs, switch):
 
         switch.add_meter(meter_config)
         meter = Meter(meter_config)
-        meter_list[meter.get_id()] = meter
+        meter_list.append(meter)
 
     return meter_list
 
@@ -61,7 +65,7 @@ def install_flows(flow_configs, switch, save_results):
 
     pp = pprint.PrettyPrinter(indent=2)
 
-    flow_list = {}
+    flow_list = []
 
     print("\n---Flows---")
     for flow_config in flow_configs:
@@ -75,7 +79,7 @@ def install_flows(flow_configs, switch, save_results):
 
         if(save_results):
             flow = Flow(flow_config)
-            flow_list[flow.get_id()] = flow
+            flow_list.append(flow)
 
     if(save_results):
         return flow_list

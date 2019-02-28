@@ -30,7 +30,7 @@ def main(args):
 
     for _i in range(0, 5):
         for flow in flow_list:
-            flow.update_bandwidth(flow_bytes[flow.get_id], timestamp)
+            flow.update_bandwidth(flow_bytes[flow.get_id()], timestamp)
 
         flow_bandwidth_display = ""
         for flow in flow_list:
