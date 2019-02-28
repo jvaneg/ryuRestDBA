@@ -1,4 +1,5 @@
 import argparse
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -21,6 +22,21 @@ def main(args):
 
     print(timestamp)
     print(flow_bytes)
+
+    flow_list = switch_list[1][2]
+
+    print("--- Flow bandwidth ---")
+    print("1\t2\t3\t4")
+
+    for _i in range(0, 5):
+        for flow in flow_list:
+            flow.update_bandwidth(flow_bytes[flow.get_id], timestamp)
+
+        flow_bandwidth_display = ""
+        for flow in flow_list:
+            flow_bandwidth_display += "{}\t".format(flow.get_bandwidth())
+
+        time.sleep(2)
 
     # loop forever
     #   poll flows

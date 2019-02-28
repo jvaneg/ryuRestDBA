@@ -97,7 +97,7 @@ def get_flow_stats(switch):
 
     flow_stats = switch.get_flows()
 
-    return flow_stats[str(switch.DPID)], datetime.now
+    return flow_stats[str(switch.DPID)], datetime.now()
 
 
 def get_flow_bytes(switch):
