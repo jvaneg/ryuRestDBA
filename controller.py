@@ -16,6 +16,8 @@ def main(args):
 
     print(switch_list)
 
+    flow_stats = switchTools(switch_list[0])
+
     # loop forever
     #   poll flows
     #   calculate bandwidth usage (target bandwidth)
