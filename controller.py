@@ -28,13 +28,15 @@ def main(args):
     print("--- Flow bandwidth ---")
     print("1\t2\t3\t4")
 
-    for _i in range(0, 5):
+    while(True):
         for flow in flow_list:
             flow.update_bandwidth(flow_bytes[flow.get_id()], timestamp)
 
         flow_bandwidth_display = ""
         for flow in flow_list:
             flow_bandwidth_display += "{}\t".format(flow.get_bandwidth())
+
+        print(flow_bandwidth_display)
 
         flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
 
