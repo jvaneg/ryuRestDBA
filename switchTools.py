@@ -90,3 +90,14 @@ def install_queues(queue_configs):
     print(str(output, "utf-8"))
 
     return
+
+
+def get_flow_stats(switch):
+
+    pp = pprint.PrettyPrinter(indent=2)
+
+    flow_stats = switch.get_flows()
+
+    pp.pprint(flow_stats)
+
+    return flow_stats

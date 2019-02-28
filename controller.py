@@ -16,7 +16,7 @@ def main(args):
 
     print(switch_list)
 
-    flow_stats = switchTools(switch_list[0])
+    flow_stats = switchTools.get_flow_stats(switch_list[1][0])
 
     # loop forever
     #   poll flows
