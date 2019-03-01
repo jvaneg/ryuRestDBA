@@ -47,10 +47,12 @@ def weighted_average(items, weights):
     if(len(items) != len(weights)):
         raise Exception("items and weight list lengths must match")
 
+    weighted_items = []
+
     for i in range(0, len(items)):
-        items[i] *= weights[i]
+        weighted_items.append(items[i] * weights[i])
 
     total_weight = sum(weights)
-    total_weighted_items = sum(items)
+    total_weighted_items = sum(weighted_items)
 
     return total_weighted_items/total_weight
