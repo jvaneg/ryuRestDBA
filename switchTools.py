@@ -32,7 +32,8 @@ def setup_switch(config_file_name):
         install_flows(switch_config["static_flows"], switch, False)
         flow_list = install_flows(switch_config["flows"], switch, True)
 
-        switch_list[switch_config["dpid"]] = (switch, sorted(meter_list, key=sort_by_id), sorted(flow_list, key=sort_by_id))
+        switch_list[switch_config["dpid"]] = (switch, sorted(meter_list, key=sort_by_id),
+                                              sorted(flow_list, key=sort_by_id))
 
     return switch_list
 

@@ -1,5 +1,7 @@
 from datetime import datetime
 
+import pandas as pd
+
 BYTE_TO_MEGABIT_FACTOR = 125000
 
 
@@ -10,7 +12,7 @@ class Flow:
         self.properties = property_dict
         self.prev_byte_count = 0
         self.prev_polled_time = datetime.now()
-        self.prev_bandwidths = []
+        self.prev_bandwidths = [0, 0, 0, 0, 0]
         self.bandwidth = 0
 
     def __repr__(self):
@@ -35,7 +37,8 @@ class Flow:
         bandwidth = megabit_delta/poll_time_delta.total_seconds()
 
         self.prev_bandwidths.append(bandwidth)
-        self.bandwidth = bandwidth
+        self.prev_bandwidths.pop(0)
+        self.bandwidth = pd.ewma(pd.Series(self.prev_bandwidths))
 
         self.prev_byte_count = new_byte_count
         self.prev_polled_time = new_polled_time
