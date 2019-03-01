@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from numpy import average
-
 BYTE_TO_MEGABIT_FACTOR = 125000
 BANDWIDTH_MEAN_WEIGHTS = [1, 2, 4, 8, 16]
 
@@ -39,7 +37,20 @@ class Flow:
 
         self.prev_bandwidths.append(bandwidth)
         self.prev_bandwidths.pop(0)
-        self.bandwidth = average(self.prev_bandwidths, weights=BANDWIDTH_MEAN_WEIGHTS)
+        self.bandwidth = weighted_average(self.prev_bandwidths, BANDWIDTH_MEAN_WEIGHTS)
 
         self.prev_byte_count = new_byte_count
         self.prev_polled_time = new_polled_time
+
+
+def weighted_average(items, weights):
+    if(len(items) != len(weights)):
+        raise Exception("items and weight list lengths must match")
+
+    for item, weight in items, weights:
+        item *= weight
+
+    total_weight = sum(weights)
+    total_weighted_items = sum(items)
+    
+    return total_weighted_items/total_weight 
