@@ -1,3 +1,7 @@
+# Basic config stuff
+[config]
+max_rate_mbps = 1000
+
 # Main switch
 [[switches]]
 dpid = 1

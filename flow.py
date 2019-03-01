@@ -1,8 +1,9 @@
 from datetime import datetime
 
-import pandas as pd
+from numpy import average
 
 BYTE_TO_MEGABIT_FACTOR = 125000
+BANDWIDTH_MEAN_WEIGHTS = [1, 2, 4, 8, 16]
 
 
 # This class mostly exists as a container because I wanted to avoid using pure dicts for everything
@@ -38,7 +39,7 @@ class Flow:
 
         self.prev_bandwidths.append(bandwidth)
         self.prev_bandwidths.pop(0)
-        self.bandwidth = pd.ewma(pd.Series(self.prev_bandwidths))
+        self.bandwidth = average(self.prev_bandwidths, weights=BANDWIDTH_MEAN_WEIGHTS)
 
         self.prev_byte_count = new_byte_count
         self.prev_polled_time = new_polled_time

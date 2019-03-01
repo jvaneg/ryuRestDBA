@@ -16,7 +16,7 @@ pep8-naming = "*"
 [packages]
 toml = "*"
 requests = "*"
-pandas = "*"
+numpy = "*"
 
 [requires]
 python_version = "3.7"
