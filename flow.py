@@ -62,7 +62,7 @@ class Flow:
         for action in actions:
             try:
                 if(action["type"] == "METER"):
-                    meter_id = int(action["type"])
+                    meter_id = int(action["meter_id"])
             except Exception:
                 meter_id = None
 
