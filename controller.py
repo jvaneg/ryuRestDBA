@@ -82,7 +82,7 @@ def calc_excess_bandwidth(flow_list, link_capacity):
         else:
             excess_bandwidth -= flow_min
 
-    return link_capacity
+    return excess_bandwidth
 
 
 if __name__ == "__main__":
