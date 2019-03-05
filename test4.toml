@@ -99,23 +99,23 @@ dpid = 1
         port = 3
 
     # H3H1 flow
-    [[switches.flows]]
+    [[switches.static_flows]]
     dpid = 1
     cookie = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
 
-        [switches.flows.match]
+        [switches.static_flows.match]
         eth_type = 2048
         ipv4_src = "192.168.2.3"
         ipv4_dst = "192.168.2.1"
 
-        [[switches.flows.actions]]
+        [[switches.static_flows.actions]]
         type = "METER"
         meter_id = 2
 
-        [[switches.flows.actions]]
+        [[switches.static_flows.actions]]
         type = "OUTPUT"
         port = 1
 
@@ -141,22 +141,22 @@ dpid = 1
         port = 3
 
     # H3H2 flow
-    [[switches.flows]]
+    [[switches.static_flows]]
     dpid = 1
     cookie = 4
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
 
-        [switches.flows.match]
+        [switches.static_flows.match]
         eth_type = 2048
         ipv4_src = "192.168.2.3"
         ipv4_dst = "192.168.2.2"
 
-        [[switches.flows.actions]]
+        [[switches.static_flows.actions]]
         type = "METER"
         meter_id = 4
 
-        [[switches.flows.actions]]
+        [[switches.static_flows.actions]]
         type = "OUTPUT"
         port = 2

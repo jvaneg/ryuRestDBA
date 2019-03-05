@@ -5,6 +5,8 @@ from pathlib import Path
 
 import switchTools
 
+import toml
+
 # from ryuswitch import RyuSwitch
 
 
@@ -12,6 +14,11 @@ def main(args):
     if(not Path(args.config_file).is_file()):
         print("Error loading config file")
         exit(-1)
+
+    with Path(args.config_file).open() as config_file:
+        config = toml.load(config_file)["config"]
+
+    link_capacity = config["link_capacity"]
 
     # setup switches
     switch_list = switchTools.setup_switch(args.config_file)
@@ -25,6 +32,8 @@ def main(args):
 
     flow_list = switch_list[1][2]
 
+    print("Link capacity: {}".format(link_capacity))
+
     for flow_id, flow in flow_list.items():
         print("Flow: {} - Meter: {} - Min rate: {} Mbps".format(flow_id, flow.get_meter(), flow.get_minimum_rate()))
 
@@ -35,11 +44,14 @@ def main(args):
         for flow_id, flow in flow_list.items():
             flow.update_bandwidth(flow_bytes[flow_id], timestamp)
 
+        excess_bandwidth = calc_excess_bandwidth(flow_list, link_capacity)
+
         flow_bandwidth_display = ""
         for flow_id, flow in flow_list.items():
             flow_bandwidth_display += "{} - {}\t  ".format(flow_id, flow.get_bandwidth())
 
         print(flow_bandwidth_display)
+        print("Excess: {} Mbps".format(excess_bandwidth))
 
         flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
 
@@ -51,6 +63,26 @@ def main(args):
     #   calculate tier 2 meter maximums (dependent on algorithm)
     #   modify tier 2 meters structures
     #   install changes on switch
+
+
+# this function will let you return negative numbers
+# TODO: write something to throw an error if sum of the meter min rates
+#       is higher than the link capacity
+def calc_excess_bandwidth(flow_list, link_capacity):
+    excess_bandwidth = link_capacity
+
+    for _flow_id, flow in flow_list.items():
+        flow_demand = flow.get_bandwidth()
+        flow_min = flow.get_minimum_rate()
+
+        # if demand <= min rate -> subtract demand
+        if(flow_demand <= flow_min):
+            excess_bandwidth -= flow_demand
+        # if demand > min_rate -> subtract min rate
+        else:
+            excess_bandwidth -= flow_min
+
+    return link_capacity
 
 
 if __name__ == "__main__":
