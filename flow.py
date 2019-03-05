@@ -1,7 +1,7 @@
 from datetime import datetime
 
 BYTE_TO_MEGABIT_FACTOR = 125000
-BANDWIDTH_MEAN_WEIGHTS = [1, 2, 4, 8, 16]
+BANDWIDTH_MEAN_WEIGHTS = [1, 2, 4, 8, 16, 32, 64]
 
 
 # This class mostly exists as a container because I wanted to avoid using pure dicts for everything
@@ -11,7 +11,7 @@ class Flow:
         self.properties = property_dict
         self.prev_byte_count = 0
         self.prev_polled_time = datetime.now()
-        self.prev_bandwidths = [0, 0, 0, 0, 0]
+        self.prev_bandwidths = [0, 0, 0]
         self.bandwidth = 0
         self.meter = None
 
@@ -70,8 +70,8 @@ class Flow:
 
 
 def weighted_average(items, weights):
-    if(len(items) != len(weights)):
-        raise Exception("items and weight list lengths must match")
+    if(len(items) > len(weights)):
+        raise Exception("items list cannot be longer than weight list")
 
     weighted_items = []
 

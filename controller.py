@@ -25,6 +25,9 @@ def main(args):
 
     flow_list = switch_list[1][2]
 
+    for flow_id, flow in flow_list.items():
+        print("Flow: {} - Meter: {}").format(flow_id, flow.get_meter())
+
     print("--- Flow bandwidth ---")
     # print("1\t2\t3\t4")
 
@@ -34,7 +37,7 @@ def main(args):
 
         flow_bandwidth_display = ""
         for flow_id, flow in flow_list.items():
-            flow_bandwidth_display += "{} - {}\t".format(flow_id, flow.get_bandwidth())
+            flow_bandwidth_display += "{} - {}\t  ".format(flow_id, flow.get_bandwidth())
 
         print(flow_bandwidth_display)
 
