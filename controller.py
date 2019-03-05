@@ -1,11 +1,11 @@
 import argparse
 import time
-from datetime import datetime
+# from datetime import datetime
 from pathlib import Path
 
 import switchTools
 
-from ryuswitch import RyuSwitch
+# from ryuswitch import RyuSwitch
 
 
 def main(args):
@@ -26,15 +26,15 @@ def main(args):
     flow_list = switch_list[1][2]
 
     print("--- Flow bandwidth ---")
-    print("1\t2\t3\t4")
+    # print("1\t2\t3\t4")
 
     while(True):
-        for flow in flow_list:
-            flow.update_bandwidth(flow_bytes[flow.get_id()], timestamp)
+        for flow_id, flow in flow_list.items():
+            flow.update_bandwidth(flow_bytes[flow_id], timestamp)
 
         flow_bandwidth_display = ""
-        for flow in flow_list:
-            flow_bandwidth_display += "{}\t".format(flow.get_bandwidth())
+        for flow_id, flow in flow_list.items():
+            flow_bandwidth_display += "{} - {}\t".format(flow_id, flow.get_bandwidth())
 
         print(flow_bandwidth_display)
 

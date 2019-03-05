@@ -32,8 +32,10 @@ def setup_switch(config_file_name):
         install_flows(switch_config["static_flows"], switch, False)
         flow_list = install_flows(switch_config["flows"], switch, True)
 
-        switch_list[switch_config["dpid"]] = (switch, sorted(meter_list, key=sort_by_id),
-                                              sorted(flow_list, key=sort_by_id))
+        # link flows to meters here
+        link_flows_to_meters(flow_list, meter_list)
+
+        switch_list[switch_config["dpid"]] = (switch, meter_list, flow_list)
 
     return switch_list
 
@@ -47,7 +49,7 @@ def install_meters(meter_configs, switch):
 
     pp = pprint.PrettyPrinter(indent=2)
 
-    meter_list = []
+    meter_list = {}
 
     print("\n---Meters---")
     for meter_config in meter_configs:
@@ -56,7 +58,7 @@ def install_meters(meter_configs, switch):
 
         switch.add_meter(meter_config)
         meter = Meter(meter_config)
-        meter_list.append(meter)
+        meter_list[meter.get_id()] = meter
 
     return meter_list
 
@@ -66,7 +68,7 @@ def install_flows(flow_configs, switch, save_results):
 
     pp = pprint.PrettyPrinter(indent=2)
 
-    flow_list = []
+    flow_list = {}
 
     print("\n---Flows---")
     for flow_config in flow_configs:
@@ -80,7 +82,7 @@ def install_flows(flow_configs, switch, save_results):
 
         if(save_results):
             flow = Flow(flow_config)
-            flow_list.append(flow)
+            flow_list[flow.get_id()] = flow
 
     if(save_results):
         return flow_list
@@ -94,6 +96,20 @@ def install_queues(queue_configs):
     print("\n---Queues---")
     output = subprocess.check_output(["bash", str(queue_configs["queue_script"])])
     print(str(output, "utf-8"))
+
+    return
+
+
+# needs error handling
+def link_flows_to_meters(flow_list, meter_list):
+    # associate each flow with a meter
+
+    for _flow_id, flow in flow_list.items():
+        try:
+            meter = meter_list[flow.get_meter_id()]
+            flow.add_meter(meter)
+        except Exception:
+            flow.add_meter(None)
 
     return
 

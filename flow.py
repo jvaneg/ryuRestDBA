@@ -13,6 +13,7 @@ class Flow:
         self.prev_polled_time = datetime.now()
         self.prev_bandwidths = [0, 0, 0, 0, 0]
         self.bandwidth = 0
+        self.meter = None
 
     def __repr__(self):
         return str(self.get_id())
@@ -41,6 +42,31 @@ class Flow:
 
         self.prev_byte_count = new_byte_count
         self.prev_polled_time = new_polled_time
+
+        return
+
+    def add_meter(self, meter):
+        self.meter = meter
+
+        return
+
+    def get_meter(self):
+        return self.meter
+
+    # add more error handling here
+    def get_meter_id(self):
+        actions = self.properties["actions"]
+
+        meter_id = None
+
+        for action in actions:
+            try:
+                if(action["type"] == "METER"):
+                    meter_id = int(action["type"])
+            except Exception:
+                meter_id = None
+
+        return meter_id
 
 
 def weighted_average(items, weights):
