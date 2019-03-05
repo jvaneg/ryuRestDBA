@@ -84,7 +84,7 @@ def weighted_average(items, weights):
     for i in range(0, len(items)):
         weighted_items.append(items[i] * weights[i])
 
-    total_weight = sum(weights)
-    total_weighted_items = sum(weighted_items[:len(items)])
+    total_weight = sum(weights[:len(items)])
+    total_weighted_items = sum(weighted_items)
 
     return total_weighted_items/total_weight
