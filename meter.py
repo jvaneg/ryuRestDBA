@@ -12,3 +12,6 @@ class Meter:
 
     def get_id(self):
         return int(self.properties["meter_id"])
+
+    def get_min_rate(self):
+        return int(self.properties["bands"]["rate"])

@@ -68,6 +68,12 @@ class Flow:
 
         return meter_id
 
+    def get_minimum_rate(self):
+        if(self.meter is not None):
+            return self.meter.get_min_rate()
+        else:
+            return 0
+
 
 def weighted_average(items, weights):
     if(len(items) > len(weights)):
