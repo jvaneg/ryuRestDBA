@@ -56,7 +56,10 @@ def main(args):
 
         flow_allocated_display = "Allocated: "
         for flow_id, flow in flow_list.items():
-            flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw() + flow.get_minimum_rate())
+            if(flow.get_allocated_bw > 0):
+                flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw() + flow.get_minimum_rate())
+            else:
+                flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
 
         print(flow_demand_display)
         print("Excess: {} Mbps".format(excess_bandwidth))

@@ -5,6 +5,8 @@ def allocate_egalitarian(flow_list, excess_bandwidth):
     for _flow_id, flow in flow_list.items():
         if(flow.get_demand_bw() > 0):
             active_flows.append(flow)
+        else:
+            flow.allocate(0)
 
     try:
         allocated_bandwidth = excess_bandwidth/len(active_flows)
