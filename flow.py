@@ -15,6 +15,7 @@ class Flow:
         self.prev_demand_bws = [0, 0, 0]
         self.demand_bandwidth = 0
         self.allocated_bw = 0
+        self.allocated_excess_share = 0
         self.meter = None
 
     def __repr__(self):
@@ -76,8 +77,9 @@ class Flow:
         else:
             return 0
 
-    def allocate(self, allocated_bandwidth):
+    def allocate(self, allocated_bandwidth, excess_share):
         self.allocated_bw = allocated_bandwidth
+        self.excess_share = excess_share
 
     def get_allocated_bw(self):
         return self.allocated_bw
