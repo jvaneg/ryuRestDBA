@@ -50,19 +50,16 @@ def main(args):
 
         dbaAlgorithms.allocate_egalitarian(flow_list, excess_bandwidth)
 
-        flow_demand_display = "Demand: "
+        flow_demand_display = "Demand:\t"
         for flow_id, flow in flow_list.items():
             flow_demand_display += "{} - {}\t  ".format(flow_id, flow.get_demand_bw())
 
-        flow_allocated_display = "Allocated: "
+        flow_allocated_display = "Allocated:\t"
         for flow_id, flow in flow_list.items():
-            if(flow.get_allocated_bw() > 0 and flow.demand_bw() >= flow.get_minimum_rate()):
-                flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw() + flow.get_minimum_rate())
-            else:
-                flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
+            flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
 
         print(flow_demand_display)
-        print("Excess: {} Mbps".format(excess_bandwidth))
+        print("Excess:\t{} Mbps".format(excess_bandwidth))
         print(flow_allocated_display)
 
         flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])

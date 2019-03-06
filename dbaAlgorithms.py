@@ -1,3 +1,4 @@
+# TODO: change this to have an allocation cap but not allocate beyond the cap
 def allocate_egalitarian(flow_list, excess_bandwidth):
 
     active_flows = []
@@ -6,15 +7,20 @@ def allocate_egalitarian(flow_list, excess_bandwidth):
         if(flow.get_demand_bw() > 0):
             active_flows.append(flow)
         else:
-            flow.allocate(0)
+            flow.allocate(0, 0)
 
     try:
-        allocated_bandwidth = excess_bandwidth/len(active_flows)
+        excess_share = excess_bandwidth/len(active_flows)
     except Exception:
-        allocated_bandwidth = 0
+        excess_share = 0
 
     for flow in active_flows:
-        flow.allocate(allocated_bandwidth)
+        if(flow.demand_bw() >= flow.get_minimum_rate()):
+            allocated_bandwidth = excess_share + flow.get_minimum_rate()
+        else:
+            allocated_bandwidth = excess_share
+
+        flow.allocate(allocated_bandwidth, excess_share)
 
     return
 
