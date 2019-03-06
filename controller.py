@@ -56,7 +56,7 @@ def main(args):
 
         flow_allocated_display = "Allocated: "
         for flow_id, flow in flow_list.items():
-            if(flow.get_allocated_bw > 0):
+            if(flow.get_allocated_bw() > 0 and flow.demand_bw() >= flow.get_minimum_rate()):
                 flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw() + flow.get_minimum_rate())
             else:
                 flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())

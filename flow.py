@@ -5,6 +5,7 @@ BANDWIDTH_MEAN_WEIGHTS = [1, 2, 4, 8, 16, 32, 64]
 
 
 # This class mostly exists as a container because I wanted to avoid using pure dicts for everything
+# TODO: add allocated_bandwidth and allocated_excess_share (one is the full allocation, other is just share of the excess bandwidth)
 class Flow:
 
     def __init__(self, property_dict):
