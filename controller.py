@@ -61,6 +61,7 @@ def main(args):
         print(flow_demand_display)
         print("Excess:\t{} Mbps".format(excess_bandwidth))
         print(flow_allocated_display)
+        print("---")
 
         flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
 

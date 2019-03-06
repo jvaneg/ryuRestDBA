@@ -15,7 +15,7 @@ def allocate_egalitarian(flow_list, excess_bandwidth):
         excess_share = 0
 
     for flow in active_flows:
-        if(flow.demand_bw() >= flow.get_minimum_rate()):
+        if(flow.get_demand_bw() >= flow.get_minimum_rate()):
             allocated_bandwidth = excess_share + flow.get_minimum_rate()
         else:
             allocated_bandwidth = excess_share
