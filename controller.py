@@ -3,6 +3,8 @@ import time
 # from datetime import datetime
 from pathlib import Path
 
+import dbaAlgorithms
+
 import switchTools
 
 import toml
@@ -42,16 +44,23 @@ def main(args):
 
     while(True):
         for flow_id, flow in flow_list.items():
-            flow.update_bandwidth(flow_bytes[flow_id], timestamp)
+            flow.update_demand_bw(flow_bytes[flow_id], timestamp)
 
         excess_bandwidth = calc_excess_bandwidth(flow_list, link_capacity)
 
-        flow_bandwidth_display = ""
-        for flow_id, flow in flow_list.items():
-            flow_bandwidth_display += "{} - {}\t  ".format(flow_id, flow.get_bandwidth())
+        dbaAlgorithms.allocate_egalitarian(flow_list, excess_bandwidth)
 
-        print(flow_bandwidth_display)
+        flow_demand_display = "Demand: "
+        for flow_id, flow in flow_list.items():
+            flow_demand_display += "{} - {}\t  ".format(flow_id, flow.get_demand_bw())
+
+        flow_allocated_display = "Allocated: "
+        for flow_id, flow in flow_list.items():
+            flow_demand_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
+
+        print(flow_demand_display)
         print("Excess: {} Mbps".format(excess_bandwidth))
+        print(flow_allocated_display)
 
         flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
 

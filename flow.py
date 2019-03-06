@@ -11,8 +11,9 @@ class Flow:
         self.properties = property_dict
         self.prev_byte_count = 0
         self.prev_polled_time = datetime.now()
-        self.prev_bandwidths = [0, 0, 0]
-        self.bandwidth = 0
+        self.prev_demand_bws = [0, 0, 0]
+        self.demand_bandwidth = 0
+        self.allocated_bw = 0
         self.meter = None
 
     def __repr__(self):
@@ -24,21 +25,21 @@ class Flow:
     def get_id(self):
         return self.properties["cookie"]
 
-    def get_bandwidth(self):
-        return self.bandwidth
+    def get_demand_bw(self):
+        return self.demand_bandwidth
 
-    def update_bandwidth(self, new_byte_count, new_polled_time):
+    def update_demand_bw(self, new_byte_count, new_polled_time):
 
         byte_delta = new_byte_count - self.prev_byte_count
         poll_time_delta = new_polled_time - self.prev_polled_time
 
         megabit_delta = byte_delta/BYTE_TO_MEGABIT_FACTOR
 
-        bandwidth = megabit_delta/poll_time_delta.total_seconds()
+        demand_bandwidth = megabit_delta/poll_time_delta.total_seconds()
 
-        self.prev_bandwidths.append(bandwidth)
-        self.prev_bandwidths.pop(0)
-        self.bandwidth = weighted_average(self.prev_bandwidths, BANDWIDTH_MEAN_WEIGHTS)
+        self.prev_demand_bws.append(demand_bandwidth)
+        self.prev_demand_bws.pop(0)
+        self.demand_bandwidth = weighted_average(self.prev_demand_bws, BANDWIDTH_MEAN_WEIGHTS)
 
         self.prev_byte_count = new_byte_count
         self.prev_polled_time = new_polled_time
@@ -73,6 +74,12 @@ class Flow:
             return self.meter.get_min_rate()
         else:
             return 0
+
+    def allocate(self, allocated_bandwidth):
+        self.allocated_bw = allocated_bandwidth
+
+    def get_allocated_bw(self):
+        return self.allocated_bw
 
 
 def weighted_average(items, weights):
