@@ -56,7 +56,7 @@ def main(args):
 
         flow_allocated_display = "Allocated: "
         for flow_id, flow in flow_list.items():
-            flow_demand_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
+            flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw() + flow.get_minimum_rate())
 
         print(flow_demand_display)
         print("Excess: {} Mbps".format(excess_bandwidth))
@@ -81,7 +81,7 @@ def calc_excess_bandwidth(flow_list, link_capacity):
     excess_bandwidth = link_capacity
 
     for _flow_id, flow in flow_list.items():
-        flow_demand = flow.get_bandwidth()
+        flow_demand = flow.get_demand_bw()
         flow_min = flow.get_minimum_rate()
 
         # if demand <= min rate -> subtract demand
