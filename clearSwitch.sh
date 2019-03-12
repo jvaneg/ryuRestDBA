@@ -1,4 +1,3 @@
-
 #!/bin/sh
 
 #requires sshpass to be installed on the machine running the script
