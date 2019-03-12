@@ -1,7 +1,6 @@
 # stdlib imports
 from datetime import datetime
 
-from dbaAlgorithms import weighted_average
 
 BYTE_TO_MEGABIT_FACTOR = 125000
 BANDWIDTH_MEAN_WEIGHTS = [1, 2, 4, 8, 16, 32, 64]
@@ -85,3 +84,20 @@ class Flow:
 
     def get_allocated_bw(self):
         return self.allocated_bw
+
+
+# Calculates a weighted average of a list
+# TODO: Should just do this with pandas or numpy but they segfault on the NUCs for some reason
+def weighted_average(items, weights):
+    if(len(items) > len(weights)):
+        raise Exception("items list cannot be longer than weight list")
+
+    weighted_items = []
+
+    for i in range(0, len(items)):
+        weighted_items.append(items[i] * weights[i])
+
+    total_weight = sum(weights[:len(items)])
+    total_weighted_items = sum(weighted_items)
+
+    return total_weighted_items/total_weight

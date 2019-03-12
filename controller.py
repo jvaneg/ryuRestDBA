@@ -12,6 +12,8 @@ import toml
 
 
 def main(args):
+
+    # check if config file exists and load it
     if(not Path(args.config_file).is_file()):
         print("Error loading config file")
         exit(-1)
@@ -24,11 +26,12 @@ def main(args):
     # setup switches
     switch_list = switchTools.setup_switch(args.config_file)
 
-    print(switch_list)
+    print(switch_list)  # TODO: remove debug
 
+    # get initial flow bytes usage
     flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
 
-    print(timestamp)
+    print(timestamp)    # TODO: remove debug
     print(flow_bytes)
 
     flow_list = switch_list[1][2]
@@ -39,8 +42,8 @@ def main(args):
         print("Flow: {} - Meter: {} - Min rate: {} Mbps".format(flow_id, flow.get_meter(), flow.get_minimum_rate()))
 
     print("--- Flow bandwidth ---")
-    # print("1\t2\t3\t4")
 
+    # TODO: cleanup switches when loop is broken
     while(True):
         for flow_id, flow in flow_list.items():
             flow.update_demand_bw(flow_bytes[flow_id], timestamp)

@@ -37,6 +37,10 @@ def setup_switch(config_file_name):
         # get the switch object from the dpid
         switch = RyuSwitch(switch_config["dpid"])
 
+        # clear the switch of existing flows/meters/queues
+        # TODO: do this through the api instead of a script
+        clear_switch()
+
         # install the queues, then meters, then flows (has to be in this order or flows can error)
         install_queues(switch_config["queues"])
         meter_list = install_meters(switch_config["meters"], switch)
@@ -191,3 +195,14 @@ def get_flow_bytes(switch):
             flow_bytes[flow_stat["cookie"]] = flow_stat["byte_count"]
 
     return flow_bytes, timestamp
+
+
+# Clears the switch of existing flows/meters/queues
+# Currently hardcoded pica8 bash script, will change this soon
+# TODO: make this use the api instead of bash
+def clear_switch():
+
+    output = subprocess.check_output(["bash", "clearSwitch.sh"])
+    print(str(output, "utf-8"))
+
+    return
