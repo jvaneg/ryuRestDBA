@@ -1,15 +1,14 @@
+# stdlib imports
 import argparse
 import time
-# from datetime import datetime
 from pathlib import Path
 
+# my module imports
 import dbaAlgorithms
-
 import switchTools
 
+# 3rd party imports
 import toml
-
-# from ryuswitch import RyuSwitch
 
 
 def main(args):

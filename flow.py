@@ -1,11 +1,13 @@
+# stdlib imports
 from datetime import datetime
+
+from dbaAlgorithms import weighted_average
 
 BYTE_TO_MEGABIT_FACTOR = 125000
 BANDWIDTH_MEAN_WEIGHTS = [1, 2, 4, 8, 16, 32, 64]
 
 
 # This class mostly exists as a container because I wanted to avoid using pure dicts for everything
-# TODO: add allocated_bandwidth and allocated_excess_share (one is the full allocation, other is just share of the excess bandwidth)
 class Flow:
 
     def __init__(self, property_dict):
@@ -83,18 +85,3 @@ class Flow:
 
     def get_allocated_bw(self):
         return self.allocated_bw
-
-
-def weighted_average(items, weights):
-    if(len(items) > len(weights)):
-        raise Exception("items list cannot be longer than weight list")
-
-    weighted_items = []
-
-    for i in range(0, len(items)):
-        weighted_items.append(items[i] * weights[i])
-
-    total_weight = sum(weights[:len(items)])
-    total_weighted_items = sum(weighted_items)
-
-    return total_weighted_items/total_weight

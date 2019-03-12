@@ -1,38 +1,49 @@
+# stdlib imports
 import pprint
 import subprocess
 from datetime import datetime
 from pathlib import Path
 
+# my module imports
 from flow import Flow
-
 from meter import Meter
-
 from ryuswitch import RyuSwitch
 
+# 3rd party imports
 import toml
 
 
 # Sets up the queues, meters, and flows for each switch
+# Reads from the config file specified on the command line
+#
+# Args:
+#   config_file_name - name of the config file, string
+# Returns:
+#   switch_list - dictionary of triplets indexed by switch dpid
+#                 format: (switch, meter_list, flow_list)
+#                   switch - ryurest object representing the switch
+#                   meter_list - dictionary of meter objects installed on switch
+#                   flow_list - dictionary of dynamic flow objects installed on switch
+#                               (does not include the static flows)
 def setup_switch(config_file_name):
-    # pp = pprint.PrettyPrinter(indent=2)
 
     with Path(config_file_name).open() as config_file:
         config = toml.load(config_file)
-        # pp.pprint(config)
 
     switch_list = {}
 
     for switch_config in config["switches"]:
-        # pp.pprint(switchConfig)
 
+        # get the switch object from the dpid
         switch = RyuSwitch(switch_config["dpid"])
 
+        # install the queues, then meters, then flows (has to be in this order or flows can error)
         install_queues(switch_config["queues"])
         meter_list = install_meters(switch_config["meters"], switch)
         install_flows(switch_config["static_flows"], switch, False)
         flow_list = install_flows(switch_config["flows"], switch, True)
 
-        # link flows to meters here
+        # link flows to meters
         link_flows_to_meters(flow_list, meter_list)
 
         switch_list[switch_config["dpid"]] = (switch, meter_list, flow_list)
@@ -40,11 +51,14 @@ def setup_switch(config_file_name):
     return switch_list
 
 
-def sort_by_id(elem):
-    return elem.get_id()
-
-
 # Installs the meters onto the switch
+# Args:
+#   meter_configs - dictionary containing all the meter configs
+#   switch - ryurest switch object representing the switch the meters will be installed on
+# Returns:
+#   meter_list - dictionary of meter objects installed on the switch, indexed by meter id
+#
+# TODO: currently outputting the config dictionaries as a debug thing, remove that when its done
 def install_meters(meter_configs, switch):
 
     pp = pprint.PrettyPrinter(indent=2)
@@ -64,6 +78,17 @@ def install_meters(meter_configs, switch):
 
 
 # Installs the flows onto the switch
+# Args:
+#   flow_configs - dictionary containing all the flow configs
+#   switch - ryurest switch object representing the switch the flows will be installed on
+#   save_results - whether or not to return the flow_list (ie static flows are just installed but not returned), bool
+#                       True - return flow_list
+#                       False - return None
+# Returns:
+#   flow_list - dictionary of flow objects installed on the switch, indexed by cookie field
+#               (I'm using the cookie field as a pseudo flow_id since the flows aren't given actual ids in Ryu)
+#
+# TODO: currently outputting the config dictionaries as a debug thing, remove that when its done
 def install_flows(flow_configs, switch, save_results):
 
     pp = pprint.PrettyPrinter(indent=2)
@@ -90,9 +115,15 @@ def install_flows(flow_configs, switch, save_results):
         return None
 
 
+# Installs queues on the switch
 # Installing queues is not supported by the ryu rest API, so currently this calls a bash subprocess
+# The name of the bash file is currently specified in the config file
+# Note: This is NOT portable and only works with the pica8 switch, would need to be updated for
+#       other switches
+# Args:
+#   queue_configs - dictionary containing queue config information (in this case just the script name)
 def install_queues(queue_configs):
-    # do nothing
+
     print("\n---Queues---")
     output = subprocess.check_output(["bash", str(queue_configs["queue_script"])])
     print(str(output, "utf-8"))
@@ -100,9 +131,20 @@ def install_queues(queue_configs):
     return
 
 
-# needs error handling
+# Associates each flow object with its corresponding meter object
+# Corresponding meter is indicated by the meter field in under actions in the config file
+# Ex:
+#
+# [[switches.flows.actions]]
+#        type = "METER"
+#        meter_id = 1
+#
+# Only used for dynamic flows, as static flows shouldnt be metered
+# Args:
+#   flow_list - dictionary of flow objects, indexed by cookie (pseudo flow id)
+#   meter_list - dictionary of meter objects, indexed by meter id
+# Note: needs more error handling for cases where the meter id is wrong
 def link_flows_to_meters(flow_list, meter_list):
-    # associate each flow with a meter
 
     for _flow_id, flow in flow_list.items():
         try:
@@ -114,6 +156,16 @@ def link_flows_to_meters(flow_list, meter_list):
     return
 
 
+# Gets all stats from the flows with a timestamp
+# Thin wrapper for a the ryurest get_flows() method
+# TODO: document the exact stats (or just link the ryu rest api docs lol)
+# Args:
+#   switch - ryurest switch object representing the switch the stats will be gathered from
+# Returns:
+#   flow_stats[switch] - flow stats for the specific switch
+#   datetime.now() - current timestamp
+# Note: Probably don't use this function unless you want stats for only one switch
+#       Make a different one to pull from all switches (less http overhead)
 def get_flow_stats(switch):
 
     flow_stats = switch.get_flows()
@@ -121,6 +173,13 @@ def get_flow_stats(switch):
     return flow_stats[str(switch.DPID)], datetime.now()
 
 
+# Gets the bytes field from the stats for every flow with a timestamp
+# Bytes are cumulative so you can use the difference to compute the bandwidth
+# Args:
+#   switch - ryurest switch object representing the switch the stats will be gathered from
+# Returns:
+#   flow_bytes - dictionary containing the bytes used for each flow, indexed by cookie (pseudo flow id)
+#   timestamp - the time the data was pulled from the switch
 def get_flow_bytes(switch):
 
     all_flow_stats, timestamp = get_flow_stats(switch)
