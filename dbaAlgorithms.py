@@ -21,7 +21,7 @@ def allocate_egalitarian(flow_list, excess_bandwidth):
         if(flow.get_demand_bw() >= flow.get_minimum_rate()):
             allocated_bandwidth = excess_share + flow.get_minimum_rate()
         else:
-            allocated_bandwidth = excess_share
+            allocated_bandwidth = excess_share + flow.get_demand_bw()
 
         flow.allocate(allocated_bandwidth, excess_share)
 
@@ -55,7 +55,7 @@ def allocate_proportional(flow_list, excess_bandwidth):
         if(flow.get_demand_bw() >= flow.get_minimum_rate()):
             allocated_bandwidth = excess_share + flow.get_minimum_rate()
         else:
-            allocated_bandwidth = excess_share
+            allocated_bandwidth = excess_share + flow.get_demand_bw() 
 
         flow.allocate(allocated_bandwidth, excess_share)
 
@@ -101,7 +101,7 @@ def allocate_hybrid(flow_list, excess_bandwidth, max_fraction):
         if(flow.get_demand_bw() >= flow.get_minimum_rate()):
             allocated_bandwidth = excess_share + active_flow_maximums[flow.get_id()] + flow.get_minimum_rate()
         else:
-            allocated_bandwidth = excess_share + active_flow_maximums[flow.get_id()]
+            allocated_bandwidth = excess_share + active_flow_maximums[flow.get_id()] + flow.get_demand_bw()
 
         flow.allocate(allocated_bandwidth, excess_share + active_flow_maximums[flow.get_id()])
 
