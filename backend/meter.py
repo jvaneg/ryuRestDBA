@@ -27,7 +27,7 @@ class Meter:
     def set_rate(self, new_rate_mbps):
         if(new_rate_mbps <= 0):
             new_rate_mbps = 1
-        self.properties["bands"][0]["rate"] = int(new_rate_mbps)*MEGABIT_TO_KILOBIT_FACTOR
+        # self.properties["bands"][0]["rate"] = int(new_rate_mbps)*MEGABIT_TO_KILOBIT_FACTOR
 
     def to_dict(self):
         return self.properties

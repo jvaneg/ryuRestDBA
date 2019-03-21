@@ -156,9 +156,23 @@ dpid = 2
     meter_id = 1
 
         [[switches.meters.bands]]
-        type = "DSCP_REMARK"
-	    prec_level = 12
+        # type = "DSCP_REMARK"
+	#      prec_level = 12
+	type = "DROP"
         rate = 1000
+
+    # meter 1
+    [[switches.meters]]
+    dpid = 2
+    flags = ["KBPS"]
+    meter_id = 3
+
+    [[switches.meters.bands]]
+        # type = "DSCP_REMARK"
+        #      prec_level = 12
+        type = "DROP"
+	rate = 1000    
+
 
     # meter 2
     [[switches.meters]]
@@ -238,6 +252,10 @@ dpid = 2
         eth_type = 2048
         ipv4_src = "10.0.0.1"
         ipv4_dst = "10.0.0.3"
+
+	[[switches.flows.actions]]
+        type = "METER"
+        meter_id = 3
 
         [[switches.flows.actions]]
         type = "OUTPUT"
