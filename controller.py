@@ -24,9 +24,13 @@ def main(args):
     link_capacity = config["link_capacity"]
 
     # setup switches
-    switch_list = switchTools.setup_switch(args.config_file)
+    switch_list = switchTools.setup_switches(args.config_file)
 
     print(switch_list)  # TODO: remove debug
+
+    tier1_switch = switch_list[TIER1_SWITCH]
+    tier2_switch = switch_list[TIER2_SWITCH]
+    tier3_switch = switch_list[TIER3_SWITCH]
 
     # get initial flow bytes usage
     flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
@@ -96,6 +100,11 @@ def calc_excess_bandwidth(flow_list, link_capacity):
 
     return excess_bandwidth
 
+
+# Constants
+TIER1_SWITCH = 0
+TIER2_SWITCH = 1
+TIER3_SWITCH = 2
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

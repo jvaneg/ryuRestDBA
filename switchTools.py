@@ -25,12 +25,12 @@ import toml
 #                   meter_list - dictionary of meter objects installed on switch
 #                   flow_list - dictionary of dynamic flow objects installed on switch
 #                               (does not include the static flows)
-def setup_switch(config_file_name):
+def setup_switches(config_file_name):
 
     with Path(config_file_name).open() as config_file:
         config = toml.load(config_file)
 
-    switch_list = {}
+    switch_list = []
 
     for switch_config in config["switches"]:
 
@@ -50,7 +50,7 @@ def setup_switch(config_file_name):
         # link flows to meters
         link_flows_to_meters(flow_list, meter_list)
 
-        switch_list[switch_config["dpid"]] = (switch, meter_list, flow_list)
+        switch_list.append((switch, meter_list, flow_list))
 
     return switch_list
 
