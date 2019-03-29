@@ -39,7 +39,7 @@ def setup_switch(config_file_name):
 
         # clear the switch of existing flows/meters/queues
         # TODO: do this through the api instead of a script
-        clear_switch()
+        clear_switch(switch)
 
         # install the queues, then meters, then flows (has to be in this order or flows can error)
         install_queues(switch_config["queues"])
@@ -198,11 +198,25 @@ def get_flow_bytes(switch):
 
 
 # Clears the switch of existing flows/meters/queues
-# Currently hardcoded pica8 bash script, will change this soon
-# TODO: make this use the api instead of bash
-def clear_switch():
+# Args:
+#   switch - ryurest switch object representing the switch that the meters, flows will be deleted from
+#   queue_configs - dictionary containing queue config information (in this case just the script name)
+def clear_switch(switch, queue_configs):
 
-    output = subprocess.check_output(["bash", "clearSwitch.sh"])
+    # delete flows
+    switch.delete_flow_all()
+
+    # get meters and delete them
+    meters = switch.get_meter_stats(str(switch.DPID))[str(switch.DPID)]
+    for meter in meters:
+        delete_meter_payload = {
+            "dpid": switch.DPID,
+            "meter_id": meter["meter_id"],
+        }
+        switch.delete_meter(delete_meter_payload)
+
+    # delete flows (from config file)
+    output = subprocess.check_output(["bash", str(queue_configs["clear_queue_script"])])
     print(str(output, "utf-8"))
 
     return
