@@ -65,12 +65,8 @@ dpid = 1
 
         [switches.static_flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.3"
-        ipv4_dst = "192.168.2.1"
-
-        [[switches.static_flows.actions]]
-        type = "METER"
-        meter_id = 2
+        ipv4_src = "10.0.0.3"
+        ipv4_dst = "10.0.0.1"
 
         [[switches.static_flows.actions]]
         type = "OUTPUT"
@@ -86,12 +82,8 @@ dpid = 1
 
         [switches.static_flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.3"
-        ipv4_dst = "192.168.2.2"
-
-        [[switches.static_flows.actions]]
-        type = "METER"
-        meter_id = 4
+        ipv4_src = "10.0.0.3"
+        ipv4_dst = "10.0.0.2"
 
         [[switches.static_flows.actions]]
         type = "OUTPUT"
@@ -109,8 +101,8 @@ dpid = 1
 
         [switches.flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.1"
-        ipv4_dst = "192.168.2.3"
+        ipv4_src = "10.0.0.1"
+        ipv4_dst = "10.0.0.3"
 
         [[switches.flows.actions]]
         type = "METER"
@@ -130,8 +122,8 @@ dpid = 1
 
         [switches.flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.2"
-        ipv4_dst = "192.168.2.3"
+        ipv4_src = "10.0.0.2"
+        ipv4_dst = "10.0.0.3"
 
         [[switches.flows.actions]]
         type = "METER"
@@ -204,12 +196,8 @@ dpid = 2
 
         [switches.static_flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.3"
-        ipv4_dst = "192.168.2.1"
-
-        [[switches.static_flows.actions]]
-        type = "METER"
-        meter_id = 2
+        ipv4_src = "10.0.0.3"
+        ipv4_dst = "10.0.0.1"
 
         [[switches.static_flows.actions]]
         type = "OUTPUT"
@@ -225,16 +213,12 @@ dpid = 2
 
         [switches.static_flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.3"
-        ipv4_dst = "192.168.2.2"
-
-        [[switches.static_flows.actions]]
-        type = "METER"
-        meter_id = 4
+        ipv4_src = "10.0.0.3"
+        ipv4_dst = "10.0.0.2"
 
         [[switches.static_flows.actions]]
         type = "OUTPUT"
-        port = 2
+        port = 1
 
     # --- main flows (controller will calculate the bandwidth for these) ---
 
@@ -248,8 +232,8 @@ dpid = 2
 
         [switches.flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.1"
-        ipv4_dst = "192.168.2.3"
+        ipv4_src = "10.0.0.1"
+        ipv4_dst = "10.0.0.3"
 
         [[switches.flows.actions]]
         type = "METER"
@@ -257,7 +241,7 @@ dpid = 2
 
         [[switches.flows.actions]]
         type = "OUTPUT"
-        port = 3
+        port = 2
 
     # H2H3 flow
     [[switches.flows]]
@@ -269,8 +253,8 @@ dpid = 2
 
         [switches.flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.2"
-        ipv4_dst = "192.168.2.3"
+        ipv4_src = "10.0.0.2"
+        ipv4_dst = "10.0.0.3"
 
         [[switches.flows.actions]]
         type = "METER"
@@ -278,7 +262,7 @@ dpid = 2
 
         [[switches.flows.actions]]
         type = "OUTPUT"
-        port = 3
+        port = 2
 
 
 # --- tier 3 switch ---
@@ -343,12 +327,8 @@ dpid = 3
 
         [switches.static_flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.3"
-        ipv4_dst = "192.168.2.1"
-
-        [[switches.static_flows.actions]]
-        type = "METER"
-        meter_id = 2
+        ipv4_src = "10.0.0.3"
+        ipv4_dst = "10.0.0.1"
 
         [[switches.static_flows.actions]]
         type = "OUTPUT"
@@ -364,16 +344,12 @@ dpid = 3
 
         [switches.static_flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.3"
-        ipv4_dst = "192.168.2.2"
-
-        [[switches.static_flows.actions]]
-        type = "METER"
-        meter_id = 4
+        ipv4_src = "10.0.0.3"
+        ipv4_dst = "10.0.0.2"
 
         [[switches.static_flows.actions]]
         type = "OUTPUT"
-        port = 2
+        port = 1
 
     # --- main flows (controller will calculate the bandwidth for these) ---
 
@@ -387,8 +363,8 @@ dpid = 3
 
         [switches.flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.1"
-        ipv4_dst = "192.168.2.3"
+        ipv4_src = "10.0.0.1"
+        ipv4_dst = "10.0.0.3"
 
         [[switches.flows.actions]]
         type = "METER"
@@ -396,7 +372,7 @@ dpid = 3
 
         [[switches.flows.actions]]
         type = "OUTPUT"
-        port = 3
+        port = 2
 
     # H2H3 flow
     [[switches.flows]]
@@ -408,8 +384,8 @@ dpid = 3
 
         [switches.flows.match]
         eth_type = 2048
-        ipv4_src = "192.168.2.2"
-        ipv4_dst = "192.168.2.3"
+        ipv4_src = "10.0.0.2"
+        ipv4_dst = "10.0.0.3"
 
         [[switches.flows.actions]]
         type = "METER"
@@ -417,5 +393,5 @@ dpid = 3
 
         [[switches.flows.actions]]
         type = "OUTPUT"
-        port = 3
+        port = 2
 
