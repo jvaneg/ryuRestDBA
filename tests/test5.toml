@@ -24,7 +24,7 @@ dpid = 1
 
         [[switches.meters.bands]]
         type = "DSCP_REMARK"
-	prec_level = 10
+	    prec_level = 10
         rate = 300000
 
     # meter 2

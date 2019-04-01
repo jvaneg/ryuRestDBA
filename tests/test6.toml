@@ -23,7 +23,8 @@ dpid = 1
     meter_id = 1
 
         [[switches.meters.bands]]
-        type = "DROP"
+        type = "DSCP_REMARK"
+	    prec_level = 10
         rate = 300000
 
     # meter 2
@@ -33,7 +34,8 @@ dpid = 1
     meter_id = 2
 
         [[switches.meters.bands]]
-        type = "DROP"
+        type = "DSCP_REMARK"
+	    prec_level = 10
         rate = 500000
 
 
@@ -58,7 +60,6 @@ dpid = 1
     # H3H1 flow
     [[switches.static_flows]]
     dpid = 1
-    cookie = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -75,7 +76,6 @@ dpid = 1
     # H3H2 flow
     [[switches.static_flows]]
     dpid = 1
-    cookie = 4
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -115,7 +115,7 @@ dpid = 1
     # H2H3 flow
     [[switches.flows]]
     dpid = 1
-    cookie = 3
+    cookie = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -189,7 +189,6 @@ dpid = 2
     # H3H1 flow
     [[switches.static_flows]]
     dpid = 2
-    cookie = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -206,7 +205,6 @@ dpid = 2
     # H3H2 flow
     [[switches.static_flows]]
     dpid = 2
-    cookie = 4
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -246,7 +244,7 @@ dpid = 2
     # H2H3 flow
     [[switches.flows]]
     dpid = 2
-    cookie = 3
+    cookie = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -320,7 +318,6 @@ dpid = 3
     # H3H1 flow
     [[switches.static_flows]]
     dpid = 3
-    cookie = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -337,7 +334,6 @@ dpid = 3
     # H3H2 flow
     [[switches.static_flows]]
     dpid = 3
-    cookie = 4
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -377,7 +373,7 @@ dpid = 3
     # H2H3 flow
     [[switches.flows]]
     dpid = 3
-    cookie = 3
+    cookie = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
