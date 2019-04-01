@@ -39,7 +39,7 @@ def setup_switches(config_file_name):
 
         # clear the switch of existing flows/meters/queues
         # TODO: do this through the api instead of a script
-        clear_switch(switch)
+        clear_switch(switch, switch_config["queues"])
 
         # install the queues, then meters, then flows (has to be in this order or flows can error)
         install_queues(switch_config["queues"])
