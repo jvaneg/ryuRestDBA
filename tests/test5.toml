@@ -12,6 +12,7 @@ dpid = 1
     # bash script to install queues
     [switches.queues]
     queue_script = "t1_s1_queues.sh"
+    clear_queue_script = "t1_s1_queues.sh"
 
 # --- main switch meters ---
 

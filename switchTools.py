@@ -207,7 +207,7 @@ def clear_switch(switch, queue_configs):
     switch.delete_flow_all()
 
     # get meters and delete them
-    meters = switch.get_meter_stats(str(switch.DPID))[str(switch.DPID)]
+    meters = switch.get_meter_stats()[str(switch.DPID)]
     for meter in meters:
         delete_meter_payload = {
             "dpid": switch.DPID,
