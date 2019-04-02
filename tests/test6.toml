@@ -11,8 +11,8 @@ dpid = 1
 
     # bash script to install queues
     [switches.queues]
-    queue_script = "t1_s1_queues.sh"
-    clear_queue_script = "t1_s1_queues.sh"
+    queue_script = "mn_dummy_queues.sh"
+    clear_queue_script = "mn_dummy_clear_queues.sh"
 
 # --- main switch meters ---
 
@@ -142,8 +142,8 @@ dpid = 2
 
     # bash script to install queues
     [switches.queues]
-    queue_script = "t1_s1_queues.sh"
-    clear_queue_script = "t1_s1_queues.sh"
+    queue_script = "mn_dummy_queues.sh"
+    clear_queue_script = "mn_dummy_clear_queues.sh"
 
 # --- tier 2 switch meters ---
 
@@ -271,8 +271,8 @@ dpid = 3
 
     # bash script to install queues
     [switches.queues]
-    queue_script = "t1_s1_queues.sh"
-    clear_queue_script = "t1_s1_queues.sh"
+    queue_script = "mn_s3_queues.sh"
+    clear_queue_script = "mn_s3_clear_queues.sh"
 
 # --- tier 3 switch meters ---
 
