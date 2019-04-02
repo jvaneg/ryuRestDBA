@@ -145,7 +145,7 @@ dpid = 2
     queue_script = "mn_dummy_queues.sh"
     clear_queue_script = "mn_dummy_clear_queues.sh"
 
-# --- tier 2 switch meters ---
+# --- tier 2 switch meters (for remarked traffic) ---
 
     # meter 1
     [[switches.meters]]
@@ -154,7 +154,8 @@ dpid = 2
     meter_id = 1
 
         [[switches.meters.bands]]
-        type = "DROP"
+        type = "DSCP_REMARK"
+	    prec_level = 12
         rate = 300000
 
     # meter 2
@@ -164,7 +165,8 @@ dpid = 2
     meter_id = 2
 
         [[switches.meters.bands]]
-        type = "DROP"
+        type = "DSCP_REMARK"
+	    prec_level = 12
         rate = 500000
 
 
@@ -220,7 +222,8 @@ dpid = 2
 
     # --- main flows (controller will calculate the bandwidth for these) ---
 
-    # H1H3 flow
+    # --- high priority flows ---
+    # H1H3 flow - high priority
     [[switches.flows]]
     dpid = 2
     cookie = 1
@@ -234,14 +237,10 @@ dpid = 2
         ipv4_dst = "10.0.0.3"
 
         [[switches.flows.actions]]
-        type = "METER"
-        meter_id = 1
-
-        [[switches.flows.actions]]
         type = "OUTPUT"
         port = 2
 
-    # H2H3 flow
+    # H2H3 flow - high priority
     [[switches.flows]]
     dpid = 2
     cookie = 2
@@ -253,6 +252,47 @@ dpid = 2
         eth_type = 2048
         ipv4_src = "10.0.0.2"
         ipv4_dst = "10.0.0.3"
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 2
+
+    # --- remarked flows (DSCP 10)---
+    # H1H3 flow - remarked
+    [[switches.flows]]
+    dpid = 2
+    cookie = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "10.0.0.1"
+        ipv4_dst = "10.0.0.3"
+        ip_dscp = 10
+
+        [[switches.flows.actions]]
+        type = "METER"
+        meter_id = 1
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 2
+
+    # H2H3 flow - remarked
+    [[switches.flows]]
+    dpid = 2
+    cookie = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "10.0.0.2"
+        ipv4_dst = "10.0.0.3"
+        ip_dscp = 10
 
         [[switches.flows.actions]]
         type = "METER"
@@ -276,7 +316,7 @@ dpid = 3
 
 # --- tier 3 switch meters ---
 
-    # meter 1
+    # meter 1 - actually unused
     [[switches.meters]]
     dpid = 3
     flags = ["KBPS"]
@@ -285,16 +325,6 @@ dpid = 3
         [[switches.meters.bands]]
         type = "DROP"
         rate = 300000
-
-    # meter 2
-    [[switches.meters]]
-    dpid = 3
-    flags = ["KBPS"]
-    meter_id = 2
-
-        [[switches.meters.bands]]
-        type = "DROP"
-        rate = 500000
 
 
 # --- tier 3 switch flows ---
@@ -349,7 +379,8 @@ dpid = 3
 
     # --- main flows (controller will calculate the bandwidth for these) ---
 
-    # H1H3 flow
+    # --- high priority flows (no DSCP) ---
+    # H1H3 flow - high priority
     [[switches.flows]]
     dpid = 3
     cookie = 1
@@ -363,14 +394,14 @@ dpid = 3
         ipv4_dst = "10.0.0.3"
 
         [[switches.flows.actions]]
-        type = "METER"
-        meter_id = 1
+        type = "SET_QUEUE"
+        queue_id = 0
 
         [[switches.flows.actions]]
         type = "OUTPUT"
         port = 2
 
-    # H2H3 flow
+    # H2H3 flow - high priority
     [[switches.flows]]
     dpid = 3
     cookie = 2
@@ -384,10 +415,99 @@ dpid = 3
         ipv4_dst = "10.0.0.3"
 
         [[switches.flows.actions]]
-        type = "METER"
-        meter_id = 2
+        type = "SET_QUEUE"
+        queue_id = 0
 
         [[switches.flows.actions]]
         type = "OUTPUT"
         port = 2
 
+    #--- medium priority flows (DSCP 10) ---
+    # H1H3 flow - medium priority
+    [[switches.flows]]
+    dpid = 3
+    cookie = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "10.0.0.1"
+        ipv4_dst = "10.0.0.3"
+        ip_dscp = 10
+
+        [[switches.flows.actions]]
+        type = "SET_QUEUE"
+        queue_id = 1
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 2
+
+    # H2H3 flow - medium priority
+    [[switches.flows]]
+    dpid = 3
+    cookie = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "10.0.0.2"
+        ipv4_dst = "10.0.0.3"
+        ip_dscp = 10
+
+        [[switches.flows.actions]]
+        type = "SET_QUEUE"
+        queue_id = 1
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 2
+
+    #--- low priority flows (DSCP 12) ---
+    # H1H3 flow - low priority
+    [[switches.flows]]
+    dpid = 3
+    cookie = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "10.0.0.1"
+        ipv4_dst = "10.0.0.3"
+        ip_dscp = 12
+
+        [[switches.flows.actions]]
+        type = "SET_QUEUE"
+        queue_id = 2
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 2
+
+    # H2H3 flow - low priority
+    [[switches.flows]]
+    dpid = 3
+    cookie = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "10.0.0.2"
+        ipv4_dst = "10.0.0.3"
+        ip_dscp = 12
+
+        [[switches.flows.actions]]
+        type = "SET_QUEUE"
+        queue_id = 2
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 2
