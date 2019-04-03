@@ -1,7 +1,7 @@
 # Basic config stuff
 [config]
 # Max rate in Mbps
-link_capacity = 1000
+link_capacity = 800
 
 # --- Main switch ---
 [[switches]]
@@ -36,7 +36,7 @@ dpid = 1
         [[switches.meters.bands]]
         type = "DSCP_REMARK"
 	    prec_level = 10
-        rate = 500000
+        rate = 400000
 
 
 # --- main switch flows ---
@@ -156,7 +156,7 @@ dpid = 2
         [[switches.meters.bands]]
         type = "DSCP_REMARK"
 	    prec_level = 12
-        rate = 300000
+        rate = 10000000
 
     # meter 2
     [[switches.meters]]
@@ -167,7 +167,7 @@ dpid = 2
         [[switches.meters.bands]]
         type = "DSCP_REMARK"
 	    prec_level = 12
-        rate = 500000
+        rate = 10000000
 
 
 # --- tier 2 switch flows ---
@@ -395,7 +395,7 @@ dpid = 3
 
         [[switches.flows.actions]]
         type = "SET_QUEUE"
-        queue_id = 0
+        queue_id = 2
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -416,7 +416,7 @@ dpid = 3
 
         [[switches.flows.actions]]
         type = "SET_QUEUE"
-        queue_id = 0
+        queue_id = 2
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -484,7 +484,7 @@ dpid = 3
 
         [[switches.flows.actions]]
         type = "SET_QUEUE"
-        queue_id = 2
+        queue_id = 0
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -506,7 +506,7 @@ dpid = 3
 
         [[switches.flows.actions]]
         type = "SET_QUEUE"
-        queue_id = 2
+        queue_id = 0
 
         [[switches.flows.actions]]
         type = "OUTPUT"

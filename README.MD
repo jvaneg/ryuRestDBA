@@ -32,3 +32,20 @@ Requires sudo for queue installation and cleanup.
 sudo mn --clean
 ```
 
+# Host commands (mininet)
+xterm into hosts from mininet (may require xquartz to be running on macos):
+```
+xterm h1 h2 h3
+```
+
+## Start iperf server
+On host 3 terminal:
+```
+iperf -s -u -p 5503
+```
+
+## Start iperf clients
+On host 1 and host 2 terminals:
+```
+iperf -c 10.0.0.3 -u -b 1024M -t 30 -p 5503
+```
