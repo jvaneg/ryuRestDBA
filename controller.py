@@ -61,6 +61,7 @@ def main(args):
             excess_bandwidth = calc_excess_bandwidth(flow_list, link_capacity)
 
             dbaAlgorithms.allocate_egalitarian(flow_list, excess_bandwidth)
+            switchTools.update_meters(tier2_switch[0], tier2_switch[2])
 
             if(args.log is not None):
                 flow_demand_display = "Demand:\t"
