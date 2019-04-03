@@ -61,18 +61,18 @@ def main(args):
 
             dbaAlgorithms.allocate_egalitarian(flow_list, excess_bandwidth)
 
-            if(args.log is not None)
+            if(args.log is not None):
                 flow_demand_display = "Demand:\t"
                 demand_csv_string = ""
                 for flow_id, flow in flow_list.items():
                     flow_demand_display += "{} - {}\t  ".format(flow_id, flow.get_demand_bw())
-                    demand_csv_string += f"{flow.get_demand_bw()},"
+                    demand_csv_string += "{},".format(flow.get_demand_bw())
 
                 flow_allocated_display = "Allocated:\t"
                 allocated_csv_string = ""
                 for flow_id, flow in flow_list.items():
                     flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
-                    allocated_csv_string += f"{flow.get_allocated_bw()},"
+                    allocated_csv_string += "{},".format(get_allocated_bw())
 
                 actual_csv_string = "10,13,"  # change this to read from s3
 
@@ -83,7 +83,7 @@ def main(args):
                 print("---")
 
                 # log to file
-                log_file.write(f"{excess_bandwidth},{demand_csv_string}{allocated_csv_string}{actual_csv_string}\n")
+                log_file.write("{},{}{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string, actual_csv_string))
 
             # read again 
             flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
