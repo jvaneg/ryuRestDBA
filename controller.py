@@ -88,7 +88,7 @@ def main(args):
             # read again 
             flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
             time.sleep(1)
-    except Exception:
+    except (KeyboardInterrupt, SystemExit, Exception):
         print("Cleaning up...")
         log_file.close()
         switchTools.clean_switches(config)
