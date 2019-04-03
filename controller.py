@@ -49,7 +49,7 @@ def main(args):
 
     if(args.log is not None):
         # open log file
-        log_file = open(args.log, "r+")
+        log_file = open(args.log, "w+")
 
     try:
         # TODO: cleanup switches when loop is broken
