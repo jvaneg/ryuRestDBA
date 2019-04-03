@@ -30,6 +30,8 @@ def setup_switches(config_file_name):
     with Path(config_file_name).open() as config_file:
         config = toml.load(config_file)
 
+    seen_dpids = []
+
     switch_list = []
 
     for switch_config in config["switches"]:
@@ -37,8 +39,10 @@ def setup_switches(config_file_name):
         # get the switch object from the dpid
         switch = RyuSwitch(switch_config["dpid"])
 
-        # clear the switch of existing flows/meters/queues
-        clear_switch(switch, switch_config["queues"])
+        # if its the first time we're adding to the switch in this setup
+        if(switch.DPID not in seen_dpids):
+            # clear the switch of existing flows/meters/queues
+            clear_switch(switch, switch_config["queues"])
 
         # install the queues, then meters, then flows (has to be in this order or flows can error)
         install_queues(switch_config["queues"])
@@ -50,6 +54,8 @@ def setup_switches(config_file_name):
         link_flows_to_meters(flow_list, meter_list)
 
         switch_list.append((switch, meter_list, flow_list))
+
+        seen_dpids.append(switch.DPID)
 
     return switch_list
 
