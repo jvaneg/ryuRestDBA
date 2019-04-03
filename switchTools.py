@@ -64,6 +64,9 @@ def clean_switches(config_file_name):
         config = toml.load(config_file)
 
     for switch_config in config["switches"]:
+        # get the switch object from the dpid
+        switch = RyuSwitch(switch_config["dpid"])
+        
         # clear the switch of existing flows/meters/queues
         clear_switch(switch, switch_config["queues"])
 
