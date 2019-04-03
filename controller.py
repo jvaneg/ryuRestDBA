@@ -33,12 +33,12 @@ def main(args):
     tier3_switch = switch_list[TIER3_SWITCH]
 
     # get initial flow bytes usage
-    flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
+    flow_bytes, timestamp = switchTools.get_flow_bytes(tier1_switch[0])
 
     print(timestamp)    # TODO: remove debug
     print(flow_bytes)
 
-    flow_list = switch_list[1][2]
+    flow_list = tier1_switch[2]
 
     print("Link capacity: {}".format(link_capacity))
 
