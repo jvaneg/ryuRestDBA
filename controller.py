@@ -126,7 +126,7 @@ def link_flows(tier1_switch_tuple, tier2_switch_tuple):
     t1_flows = tier1_switch_tuple[2]
     t2_flows = tier2_switch_tuple[2]
 
-    for t1_flow_id, t1_flow in t1_flows:
+    for t1_flow_id, t1_flow in t1_flows.items():
         try:
             t2_linked_flow = t2_flows[t1_flow_id]
             t1_flow.add_linked_flow(t2_linked_flow)
