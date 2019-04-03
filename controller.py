@@ -74,7 +74,7 @@ def main(args):
                     flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
                     allocated_csv_string += "{},".format(flow.get_allocated_bw())
 
-                actual_csv_string = "10,13,"  # change this to read from s3
+                # actual_csv_string = "10,13,"  # change this to read from s3
 
                 # display stuff
                 print(flow_demand_display)
@@ -83,7 +83,8 @@ def main(args):
                 print("---")
 
                 # log to file
-                log_file.write("{},{}{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string, actual_csv_string))
+                # log_file.write("{},{}{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string, actual_csv_string))
+                log_file.write("{},{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string))
 
             # read again 
             flow_bytes, timestamp = switchTools.get_flow_bytes(tier1_switch[0])
