@@ -92,7 +92,7 @@ def main(args):
         print("Cleaning up...")
         if(args.log is not None):
             log_file.close()
-        switchTools.clean_switches(config)
+        switchTools.clean_switches(args.config_file)
 
     # loop forever
     #   poll flows
