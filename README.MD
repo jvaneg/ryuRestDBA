@@ -47,5 +47,6 @@ iperf -s -u -p 5503
 ## Start iperf clients
 On host 1 and host 2 terminals:
 ```
-iperf -c 10.0.0.3 -u -b 1024M -t 30 -p 5503
+iperf -c 10.0.0.3 -u -b 400M -t 30 -p 5503
 ```
+Note: Do not try to use a demand higher than the network can support or you will drop many packets.
