@@ -86,7 +86,7 @@ def main(args):
                 log_file.write("{},{}{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string, actual_csv_string))
 
             # read again 
-            flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
+            flow_bytes, timestamp = switchTools.get_flow_bytes(tier1_switch[0])
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit, Exception) as e:
         print(e)
