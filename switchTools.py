@@ -38,7 +38,6 @@ def setup_switches(config_file_name):
         switch = RyuSwitch(switch_config["dpid"])
 
         # clear the switch of existing flows/meters/queues
-        # TODO: do this through the api instead of a script
         clear_switch(switch, switch_config["queues"])
 
         # install the queues, then meters, then flows (has to be in this order or flows can error)
@@ -53,6 +52,23 @@ def setup_switches(config_file_name):
         switch_list.append((switch, meter_list, flow_list))
 
     return switch_list
+
+
+# Clears the switches of flows, meters, and queues
+# Reads from the config file specified on the command line
+#
+# Args:
+#   config_file_name - name of the config file, string
+def clean_switches(config_file_name):
+    with Path(config_file_name).open() as config_file:
+        config = toml.load(config_file)
+
+    for switch_config in config["switches"]:
+        # clear the switch of existing flows/meters/queues
+        clear_switch(switch, switch_config["queues"])
+
+    return
+
 
 
 # Installs the meters onto the switch

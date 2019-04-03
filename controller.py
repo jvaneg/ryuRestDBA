@@ -47,31 +47,51 @@ def main(args):
 
     print("--- Flow bandwidth ---")
 
-    # TODO: cleanup switches when loop is broken
-    while(True):
-        for flow_id, flow in flow_list.items():
-            flow.update_demand_bw(flow_bytes[flow_id], timestamp)
+    if(args.log is not None):
+        # open log file
+        log_file = open(args.log, "r+")
 
-        excess_bandwidth = calc_excess_bandwidth(flow_list, link_capacity)
+    try:
+        # TODO: cleanup switches when loop is broken
+        while(True):
+            for flow_id, flow in flow_list.items():
+                flow.update_demand_bw(flow_bytes[flow_id], timestamp)
 
-        dbaAlgorithms.allocate_egalitarian(flow_list, excess_bandwidth)
+            excess_bandwidth = calc_excess_bandwidth(flow_list, link_capacity)
 
-        flow_demand_display = "Demand:\t"
-        for flow_id, flow in flow_list.items():
-            flow_demand_display += "{} - {}\t  ".format(flow_id, flow.get_demand_bw())
+            dbaAlgorithms.allocate_egalitarian(flow_list, excess_bandwidth)
 
-        flow_allocated_display = "Allocated:\t"
-        for flow_id, flow in flow_list.items():
-            flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
+            if(args.log is not None)
+                flow_demand_display = "Demand:\t"
+                demand_csv_string = ""
+                for flow_id, flow in flow_list.items():
+                    flow_demand_display += "{} - {}\t  ".format(flow_id, flow.get_demand_bw())
+                    demand_csv_string += f"{flow.get_demand_bw()},"
 
-        print(flow_demand_display)
-        print("Excess:\t{} Mbps".format(excess_bandwidth))
-        print(flow_allocated_display)
-        print("---")
+                flow_allocated_display = "Allocated:\t"
+                allocated_csv_string = ""
+                for flow_id, flow in flow_list.items():
+                    flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
+                    allocated_csv_string += f"{flow.get_allocated_bw()},"
 
-        flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
+                actual_csv_string = "10,13,"  # change this to read from s3
 
-        time.sleep(2)
+                # display stuff
+                print(flow_demand_display)
+                print("Excess:\t{} Mbps".format(excess_bandwidth))
+                print(flow_allocated_display)
+                print("---")
+
+                # log to file
+                log_file.write(f"{excess_bandwidth},{demand_csv_string}{allocated_csv_string}{actual_csv_string}\n")
+
+            # read again 
+            flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
+            time.sleep(1)
+    except Exception:
+        print("Cleaning up...")
+        log_file.close()
+        switchTools.clean_switches(config)
 
     # loop forever
     #   poll flows
@@ -109,5 +129,6 @@ TIER3_SWITCH = 2
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("config_file", help="the config file describing the flows and switches")
+    parser.add_argument("-l", "--log", metavar="[log file name]", help="specify a log file")
     args = parser.parse_args()
     main(args)
