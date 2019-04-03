@@ -40,6 +40,8 @@ def main(args):
 
     flow_list = tier1_switch[2]
 
+    link_flows(tier1_switch, tier2_switch)
+
     print("Link capacity: {}".format(link_capacity))
 
     for flow_id, flow in flow_list.items():
@@ -52,7 +54,6 @@ def main(args):
         log_file = open(args.log, "w+")
 
     try:
-        # TODO: cleanup switches when loop is broken
         while(True):
             for flow_id, flow in flow_list.items():
                 flow.update_demand_bw(flow_bytes[flow_id], timestamp)
@@ -74,8 +75,6 @@ def main(args):
                     flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
                     allocated_csv_string += "{},".format(flow.get_allocated_bw())
 
-                # actual_csv_string = "10,13,"  # change this to read from s3
-
                 # display stuff
                 print(flow_demand_display)
                 print("Excess:\t{} Mbps".format(excess_bandwidth))
@@ -83,7 +82,6 @@ def main(args):
                 print("---")
 
                 # log to file
-                # log_file.write("{},{}{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string, actual_csv_string))
                 log_file.write("{},{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string))
 
             # read again 
@@ -122,6 +120,19 @@ def calc_excess_bandwidth(flow_list, link_capacity):
             excess_bandwidth -= flow_min
 
     return excess_bandwidth
+
+
+def link_flows(tier1_switch_tuple, tier2_switch_tuple):
+    t1_flows = tier1_switch_tuple[2]
+    t2_flows = tier2_switch_tuple[2]
+
+    for t1_flow_id, t1_flow in t1_flows:
+        try:
+            t2_linked_flow = t2_flows[t1_flow_id]
+            t1_flow.add_linked_flow(t2_linked_flow)
+            t2_linked_flow.add_linked_flow(t1_flow)
+        except Exception:
+            pass
 
 
 # Constants

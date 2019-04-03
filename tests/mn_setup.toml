@@ -226,7 +226,7 @@ dpid = 2
     # H1H3 flow - high priority
     [[switches.flows]]
     dpid = 2
-    cookie = 1
+    cookie = 0
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -243,7 +243,7 @@ dpid = 2
     # H2H3 flow - high priority
     [[switches.flows]]
     dpid = 2
-    cookie = 2
+    cookie = 0
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0

@@ -18,6 +18,7 @@ class Flow:
         self.allocated_bw = 0
         self.allocated_excess_share = 0
         self.meter = None
+        self.linked_flow = None
 
     def __repr__(self):
         return str(self.get_id())
@@ -81,9 +82,18 @@ class Flow:
     def allocate(self, allocated_bandwidth, excess_share):
         self.allocated_bw = allocated_bandwidth
         self.excess_share = excess_share
+        if(self.linked_flow is not None):
+            self.linked_flow.set_meter_rate(excess_share)
 
     def get_allocated_bw(self):
         return self.allocated_bw
+
+    def set_meter_rate(self, new_rate_mbps):
+        if(self.meter is not None):
+            self.meter.set_meter_rate(new_rate_mbps)
+
+    def add_linked_flow(self, linked_flow):
+        self.linked_flow = linked_flow
 
 
 # Calculates a weighted average of a list

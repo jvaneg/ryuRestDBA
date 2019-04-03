@@ -19,7 +19,7 @@ import toml
 # Args:
 #   config_file_name - name of the config file, string
 # Returns:
-#   switch_list - dictionary of triplets indexed by switch dpid
+#   switch_list - list of triplets
 #                 format: (switch, meter_list, flow_list)
 #                   switch - ryurest object representing the switch
 #                   meter_list - dictionary of meter objects installed on switch
@@ -239,3 +239,10 @@ def clear_switch(switch, queue_configs):
     print(str(output, "utf-8"))
 
     return
+
+
+# write all meter updates to the switch
+def update_meters(switch, flow_list):
+    for flow in flow_list:
+        if(flow.get_meter() is not None):
+            switch.modify_meter(flow.get_meter().to_dict())
