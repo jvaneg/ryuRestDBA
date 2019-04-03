@@ -90,7 +90,7 @@ class Flow:
 
     def set_meter_rate(self, new_rate_mbps):
         if(self.meter is not None):
-            self.meter.set_meter_rate(new_rate_mbps)
+            self.meter.set_rate(new_rate_mbps)
 
     def add_linked_flow(self, linked_flow):
         self.linked_flow = linked_flow
