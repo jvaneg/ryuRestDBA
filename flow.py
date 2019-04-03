@@ -83,14 +83,12 @@ class Flow:
         self.allocated_bw = allocated_bandwidth
         self.excess_share = excess_share
         if(self.linked_flow is not None):
-            print(excess_share)
-            self.linked_flow.set_meter_rate(excess_share)
+            self.linked_flow.set_meter_rate(self.allocated_bw - get_min_rate())
 
     def get_allocated_bw(self):
         return self.allocated_bw
 
     def set_meter_rate(self, new_rate_mbps):
-        print(new_rate_mbps)
         if(self.meter is not None):
             self.meter.set_rate(new_rate_mbps)
 
