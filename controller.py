@@ -90,7 +90,8 @@ def main(args):
             time.sleep(1)
     except (KeyboardInterrupt, SystemExit, Exception):
         print("Cleaning up...")
-        log_file.close()
+        if(args.log is not None):
+            log_file.close()
         switchTools.clean_switches(config)
 
     # loop forever
