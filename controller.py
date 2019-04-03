@@ -72,7 +72,7 @@ def main(args):
                 allocated_csv_string = ""
                 for flow_id, flow in flow_list.items():
                     flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
-                    allocated_csv_string += "{},".format(get_allocated_bw())
+                    allocated_csv_string += "{},".format(flow.get_allocated_bw())
 
                 actual_csv_string = "10,13,"  # change this to read from s3
 
@@ -88,7 +88,8 @@ def main(args):
             # read again 
             flow_bytes, timestamp = switchTools.get_flow_bytes(switch_list[1][0])
             time.sleep(1)
-    except (KeyboardInterrupt, SystemExit, Exception):
+    except (KeyboardInterrupt, SystemExit, Exception) as e:
+        print(e)
         print("Cleaning up...")
         if(args.log is not None):
             log_file.close()
