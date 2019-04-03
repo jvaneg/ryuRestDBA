@@ -243,6 +243,6 @@ def clear_switch(switch, queue_configs):
 
 # write all meter updates to the switch
 def update_meters(switch, flow_list):
-    for flow in flow_list:
+    for _flow_id, flow in flow_list.items():
         if(flow.get_meter() is not None):
             switch.modify_meter(flow.get_meter().to_dict())
