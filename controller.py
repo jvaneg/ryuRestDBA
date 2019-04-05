@@ -24,7 +24,7 @@ def main(args):
     link_capacity = config["link_capacity"]
 
     # setup switches
-    switch_list = switchTools.setup_switches(args.config_file)
+    switch_list = switchTools.setup_switches(Path(args.config_file))
 
     print(switch_list)  # TODO: remove debug
 
@@ -33,17 +33,18 @@ def main(args):
     tier3_switch = switch_list[TIER3_SWITCH]
 
     # get initial flow bytes usage TODO: remove this
-    flow_bytes, timestamp = switchTools.get_flow_bytes(tier1_switch[0])
+    t1_flow_bytes, t1_timestamp = switchTools.get_flow_bytes(tier1_switch[0])
 
-    print(timestamp)    # TODO: remove debug
-    print(flow_bytes)
+    print(t1_timestamp)    # TODO: remove debug
+    print(t1_flow_bytes)
 
-    t1_flow_list = tier1_switch[2]
+    # link flows
     link_flows(tier1_switch, tier2_switch)
 
     print("Link capacity: {}".format(link_capacity))  # TODO: remove debug
 
     # TODO: remove this debug stuff
+    t1_flow_list = tier1_switch[2]
     for flow_id, flow in t1_flow_list.items():
         print("Flow: {} - Meter: {} - Min rate: {} Mbps".format(flow_id, flow.get_meter(), flow.get_minimum_rate()))
 
@@ -63,13 +64,15 @@ def main(args):
         #   if logging:
         #       poll tier 3 flows
         #       log data to file
+        t1_flow_list = tier1_switch[2]
+        t3_flow_list = tier3_switch[2]
         while(True):
             # poll t1 switch flows for flow information
-            # flow_bytes, timestamp = switchTools.get_flow_bytes(tier1_switch[0])
+            t1_flow_bytes, t1_timestamp = switchTools.get_flow_bytes(tier1_switch[0])
 
             # calculate demand bandwidth for each flow
             for flow_id, flow in t1_flow_list.items():
-                flow.update_demand_bw(flow_bytes[flow_id], timestamp)
+                flow.update_demand_bw(t1_flow_bytes[flow_id], t1_timestamp)
 
             # calculate excess bandwidth TODO: may not need this with different alg implementation
             excess_bandwidth = calc_excess_bandwidth(t1_flow_list, link_capacity)
@@ -83,6 +86,10 @@ def main(args):
             # logging data
             if(args.log is not None):
                 # TODO: poll t3 switch for flow data
+                t3_flow_bytes, t3_timestamp = switchTools.get_flow_bytes(tier3_switch[0])
+                # calculate demand bw for t3 flows (high, med, low)
+                for flow_id, flow in t3_flow_list.items():
+                    flow.update_demand_bw(t3_flow_bytes[flow_id], t3_timestamp)
 
                 flow_demand_display = "Demand:\t"
                 demand_csv_string = ""
@@ -96,20 +103,51 @@ def main(args):
                     flow_allocated_display += "{} - {}\t  ".format(flow_id, flow.get_allocated_bw())
                     allocated_csv_string += "{},".format(flow.get_allocated_bw())
 
+                flow_min_display = "Min rate:\t"
+                min_csv_string = ""
+                for flow_id, flow in t1_flow_list.items():
+                    flow_min_display += "{} - {}\t  ".format(flow_id, flow.get_minimum_rate())
+                    min_csv_string += "{},".format(flow.get_minimum_rate())
+
+                flow_high_display = "High Priority:\t"
+                high_csv_string = ""
+                flow_high_display += "{} - {}\t  {} - {}\t  ".format(1, t3_flow_list[1].get_demand_bw(),
+                                                                     2, t3_flow_list[2].get_demand_bw())
+                high_csv_string += "{},{},".format(t3_flow_list[1].get_demand_bw(), t3_flow_list[2].get_demand_bw())
+
+                flow_med_display = "Medium Priority:\t"
+                med_csv_string = ""
+                flow_med_display += "{} - {}\t  {} - {}\t  ".format(3, t3_flow_list[3].get_demand_bw(),
+                                                                    4, t3_flow_list[4].get_demand_bw())
+                med_csv_string += "{},{},".format(t3_flow_list[3].get_demand_bw(), t3_flow_list[4].get_demand_bw())
+
+                flow_low_display = "Low Priority:\t"
+                low_csv_string = ""
+                flow_low_display += "{} - {}\t  {} - {}\t  ".format(5, t3_flow_list[5].get_demand_bw(),
+                                                                    6, t3_flow_list[6].get_demand_bw())
+                low_csv_string += "{},{},".format(t3_flow_list[5].get_demand_bw(), t3_flow_list[6].get_demand_bw())
+
                 # display stuff
+                print(flow_min_display)
                 print(flow_demand_display)
                 print("Excess:\t{} Mbps".format(excess_bandwidth))
                 print(flow_allocated_display)
+                print(flow_high_display)
+                print(flow_med_display)
+                print(flow_low_display)
                 print("---")
 
                 # log to file
-                log_file.write("{},{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string))
+                # log csv line format:
+                # excess,demand_h1,demand_h2,alloc_h1,alloc_h2,high_h1,high_h2,med_h1,med_h2,low_h1,low_h2,min_h1,min_h2,
+                log_file.write("{},{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string,
+                                                  high_csv_string, med_csv_string, low_csv_string, min_csv_string))
 
             # wait
             time.sleep(1)
 
             # read again
-            flow_bytes, timestamp = switchTools.get_flow_bytes(tier1_switch[0])
+            t1_flow_bytes, t1_timestamp = switchTools.get_flow_bytes(tier1_switch[0])
     except (KeyboardInterrupt, SystemExit):
         pass
     except Exception as e:
@@ -122,7 +160,7 @@ def main(args):
             log_file.close()
 
         # clean switch
-        switchTools.clean_switches(args.config_file)
+        switchTools.clean_switches(Path(args.config_file))
 
 
 # this function will let you return negative numbers

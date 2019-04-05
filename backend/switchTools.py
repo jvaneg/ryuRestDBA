@@ -2,7 +2,6 @@
 import pprint
 import subprocess
 from datetime import datetime
-from pathlib import Path
 
 # my module imports
 from flow import Flow
@@ -25,9 +24,9 @@ import toml
 #                   meter_list - dictionary of meter objects installed on switch
 #                   flow_list - dictionary of dynamic flow objects installed on switch
 #                               (does not include the static flows)
-def setup_switches(config_file_name):
+def setup_switches(config_file_path):
 
-    with Path(config_file_name).open() as config_file:
+    with config_file_path.open() as config_file:
         config = toml.load(config_file)
 
     seen_dpids = []
@@ -65,19 +64,18 @@ def setup_switches(config_file_name):
 #
 # Args:
 #   config_file_name - name of the config file, string
-def clean_switches(config_file_name):
-    with Path(config_file_name).open() as config_file:
+def clean_switches(config_file_path):
+    with config_file_path.open() as config_file:
         config = toml.load(config_file)
 
     for switch_config in config["switches"]:
         # get the switch object from the dpid
         switch = RyuSwitch(switch_config["dpid"])
-        
+
         # clear the switch of existing flows/meters/queues
         clear_switch(switch, switch_config["queues"])
 
     return
-
 
 
 # Installs the meters onto the switch

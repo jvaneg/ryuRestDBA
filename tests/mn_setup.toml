@@ -98,6 +98,7 @@ dpid = 1
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 100
 
         [switches.flows.match]
         eth_type = 2048
@@ -119,6 +120,7 @@ dpid = 1
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 100
 
         [switches.flows.match]
         eth_type = 2048
@@ -230,6 +232,7 @@ dpid = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 100
 
         [switches.flows.match]
         eth_type = 2048
@@ -247,6 +250,7 @@ dpid = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 100
 
         [switches.flows.match]
         eth_type = 2048
@@ -265,6 +269,7 @@ dpid = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 200
 
         [switches.flows.match]
         eth_type = 2048
@@ -287,6 +292,7 @@ dpid = 2
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 200
 
         [switches.flows.match]
         eth_type = 2048
@@ -387,6 +393,7 @@ dpid = 3
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 100
 
         [switches.flows.match]
         eth_type = 2048
@@ -408,6 +415,7 @@ dpid = 3
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 100
 
         [switches.flows.match]
         eth_type = 2048
@@ -426,10 +434,11 @@ dpid = 3
     # H1H3 flow - medium priority
     [[switches.flows]]
     dpid = 3
-    cookie = 1
+    cookie = 3
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 200
 
         [switches.flows.match]
         eth_type = 2048
@@ -448,10 +457,11 @@ dpid = 3
     # H2H3 flow - medium priority
     [[switches.flows]]
     dpid = 3
-    cookie = 2
+    cookie = 4
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 200
 
         [switches.flows.match]
         eth_type = 2048
@@ -471,10 +481,11 @@ dpid = 3
     # H1H3 flow - low priority
     [[switches.flows]]
     dpid = 3
-    cookie = 1
+    cookie = 5
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 300
 
         [switches.flows.match]
         eth_type = 2048
@@ -493,10 +504,11 @@ dpid = 3
     # H2H3 flow - low priority
     [[switches.flows]]
     dpid = 3
-    cookie = 2
+    cookie = 6
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
+    priority = 300
 
         [switches.flows.match]
         eth_type = 2048
@@ -504,10 +516,15 @@ dpid = 3
         ipv4_dst = "10.0.0.3"
         ip_dscp = 12
 
+        # Enable this action for implicit drop
         [[switches.flows.actions]]
-        type = "SET_QUEUE"
-        queue_id = 0
+        type = "CLEAR_ACTIONS"
 
-        [[switches.flows.actions]]
-        type = "OUTPUT"
-        port = 2
+        # Enable these actions for overflow support
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 0
+
+        # [[switches.flows.actions]]
+        # type = "OUTPUT"
+        # port = 2
