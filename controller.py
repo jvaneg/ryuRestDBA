@@ -156,7 +156,6 @@ def main(args):
                 print(flow_high_display)
                 print(flow_med_display)
                 print(flow_low_display)
-                print(t2_flow_bytes)
                 print("---")
 
                 # log to file
