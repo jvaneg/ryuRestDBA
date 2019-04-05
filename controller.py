@@ -65,6 +65,7 @@ def main(args):
         #   if logging:
         #       poll tier 3 flows
         #       log data to file
+
         t1_flow_list = tier1_switch[2]
         t2_flow_list = tier2_switch[2]
         t3_flow_list = tier3_switch[2]
@@ -99,6 +100,7 @@ def main(args):
                 for flow_id, flow in t2_flow_list.items():
                     flow.update_demand_bw(t2_flow_bytes[flow_id], t2_timestamp)
 
+                # generate a line of csv output
                 flow_demand_display = "S1 - Demand:\t"
                 demand_csv_string = ""
                 for flow_id, flow in t1_flow_list.items():
@@ -169,8 +171,6 @@ def main(args):
             # wait
             time.sleep(1)
 
-            # read again
-            t1_flow_bytes, t1_timestamp = switchTools.get_flow_bytes(tier1_switch[0])
     except (KeyboardInterrupt, SystemExit):
         pass
     except Exception:
