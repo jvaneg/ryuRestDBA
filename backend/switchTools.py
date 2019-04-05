@@ -43,7 +43,6 @@ def setup_switches(config_file_path):
         if(switch.DPID not in seen_dpids):
             # clear the switch of existing flows/meters/queues
             clear_switch(switch, switch_config["queues"])
-            time.sleep(2)
 
         # install the queues, then meters, then flows (has to be in this order or flows can error)
         install_queues(switch_config["queues"])
@@ -156,6 +155,7 @@ def install_queues(queue_configs):
     print("\n---Queues---")
     output = subprocess.check_output(["bash", str(queue_configs["queue_script"])])
     print(str(output, "utf-8"))
+    time.sleep(2)  # wait for queues to install on remote machine
 
     return
 
