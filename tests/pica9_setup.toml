@@ -231,7 +231,7 @@ dpid = 2
     # H1H3 flow - high priority
     [[switches.flows]]
     dpid = 2
-    cookie = 0
+    cookie = 10
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -249,7 +249,7 @@ dpid = 2
     # H2H3 flow - high priority
     [[switches.flows]]
     dpid = 2
-    cookie = 0
+    cookie = 11
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -353,7 +353,7 @@ dpid = 2
          eth_type = 2048
          ipv4_src = "192.168.2.10"
          ipv4_dst = "192.168.2.11"
-         
+
     # ARP flow
     # not needed because t2 and t3 share static flows
     # [[switches.static_flows]]
@@ -409,7 +409,7 @@ dpid = 2
     # H1H3 flow - high priority
     [[switches.flows]]
     dpid = 2
-    cookie = 1
+    cookie = 3
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -432,7 +432,7 @@ dpid = 2
     # H2H3 flow - high priority
     [[switches.flows]]
     dpid = 2
-    cookie = 2
+    cookie = 4
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -456,7 +456,7 @@ dpid = 2
     # H1H3 flow - medium priority
     [[switches.flows]]
     dpid = 2
-    cookie = 1
+    cookie = 5
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -480,7 +480,7 @@ dpid = 2
     # H2H3 flow - medium priority
     [[switches.flows]]
     dpid = 2
-    cookie = 2
+    cookie = 6
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -505,7 +505,7 @@ dpid = 2
     # H1H3 flow - low priority
     [[switches.flows]]
     dpid = 2
-    cookie = 1
+    cookie = 7
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -529,7 +529,7 @@ dpid = 2
     # H2H3 flow - low priority
     [[switches.flows]]
     dpid = 2
-    cookie = 2
+    cookie = 8
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
