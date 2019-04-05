@@ -1,0 +1,538 @@
+# Basic config stuff
+[config]
+# Max rate in Mbps
+link_capacity = 600
+
+# --- Main switch ---
+[[switches]]
+dpid = 1
+
+# --- main switch queues ---
+
+    # bash script to install queues
+    [switches.queues]
+    queue_script = "pica8_dummy_queues.sh"
+    clear_queue_script = "pica8_dummy_clear_queues.sh"
+
+# --- main switch meters ---
+
+    # meter 1
+    [[switches.meters]]
+    dpid = 1
+    flags = ["KBPS"]
+    meter_id = 1
+
+        [[switches.meters.bands]]
+        type = "DSCP_REMARK"
+	    prec_level = 10
+        rate = 100000
+
+    # meter 2
+    [[switches.meters]]
+    dpid = 1
+    flags = ["KBPS"]
+    meter_id = 2
+
+        [[switches.meters.bands]]
+        type = "DSCP_REMARK"
+	    prec_level = 10
+        rate = 200000
+
+
+# --- main switch flows ---
+
+    # --- static flows (installed and then left untouched by the controller) ---
+
+    # ARP flow
+    [[switches.static_flows]]
+    dpid = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.static_flows.match]
+        eth_type = 2054
+
+        [[switches.static_flows.actions]]
+        type = "OUTPUT"
+        port = "FLOOD"
+
+    # H3H1 flow
+    [[switches.static_flows]]
+    dpid = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.static_flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.3"
+        ipv4_dst = "192.168.2.1"
+
+        [[switches.static_flows.actions]]
+        type = "OUTPUT"
+        port = 1
+
+    # H3H2 flow
+    [[switches.static_flows]]
+    dpid = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.static_flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.3"
+        ipv4_dst = "192.168.2.2"
+
+        [[switches.static_flows.actions]]
+        type = "OUTPUT"
+        port = 2
+
+    # --- main flows (controller will calculate the bandwidth for these) ---
+
+    # H1H3 flow
+    [[switches.flows]]
+    dpid = 1
+    cookie = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.1"
+        ipv4_dst = "192.168.2.3"
+
+        [[switches.flows.actions]]
+        type = "METER"
+        meter_id = 1
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # H2H3 flow
+    [[switches.flows]]
+    dpid = 1
+    cookie = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.2"
+        ipv4_dst = "192.168.2.3"
+
+        [[switches.flows.actions]]
+        type = "METER"
+        meter_id = 2
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+
+# --- tier 2 switch ---
+[[switches]]
+dpid = 2
+
+# --- tier 2 switch queues ---
+
+    # bash script to install queues
+    [switches.queues]
+    queue_script = "pica8_dummy_queues.sh"
+    clear_queue_script = "pica8_dummy_clear_queues.sh"
+
+# --- tier 2 switch meters (for remarked traffic) ---
+
+    # meter 1
+    [[switches.meters]]
+    dpid = 2
+    flags = ["KBPS"]
+    meter_id = 1
+
+        [[switches.meters.bands]]
+        type = "DSCP_REMARK"
+	    prec_level = 12
+        rate = 1000
+
+    # meter 2
+    [[switches.meters]]
+    dpid = 2
+    flags = ["KBPS"]
+    meter_id = 2
+
+        [[switches.meters.bands]]
+        type = "DSCP_REMARK"
+	    prec_level = 12
+        rate = 1000
+
+
+# --- tier 2 switch flows ---
+
+    # --- static flows (installed and then left untouched by the controller) ---
+
+    # ARP flow
+    # Outputs to 1 and 3 instead of FLOOD to prevent loop
+    [[switches.static_flows]]
+    dpid = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.static_flows.match]
+        eth_type = 2054
+
+        [[switches.static_flows.actions]]
+        type = "OUTPUT"
+        port = 1
+
+        [[switches.static_flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # H3H1 flow
+    [[switches.static_flows]]
+    dpid = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.static_flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.3"
+        ipv4_dst = "192.168.2.1"
+
+        [[switches.static_flows.actions]]
+        type = "OUTPUT"
+        port = 1
+
+    # H3H2 flow
+    [[switches.static_flows]]
+    dpid = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+        [switches.static_flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.3"
+        ipv4_dst = "192.168.2.2"
+
+        [[switches.static_flows.actions]]
+        type = "OUTPUT"
+        port = 1
+
+    # --- main flows (controller will calculate the bandwidth for these) ---
+
+    # --- high priority flows ---
+    # H1H3 flow - high priority
+    [[switches.flows]]
+    dpid = 2
+    cookie = 0
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 100
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.1"
+        ipv4_dst = "192.168.2.3"
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # H2H3 flow - high priority
+    [[switches.flows]]
+    dpid = 2
+    cookie = 0
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 100
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.2"
+        ipv4_dst = "192.168.2.3"
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # --- remarked flows (DSCP 10)---
+    # H1H3 flow - remarked
+    [[switches.flows]]
+    dpid = 2
+    cookie = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 200
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.1"
+        ipv4_dst = "192.168.2.3"
+        ip_dscp = 10
+
+        [[switches.flows.actions]]
+        type = "METER"
+        meter_id = 1
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # H2H3 flow - remarked
+    [[switches.flows]]
+    dpid = 2
+    cookie = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 200
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.2"
+        ipv4_dst = "192.168.2.3"
+        ip_dscp = 10
+
+        [[switches.flows.actions]]
+        type = "METER"
+        meter_id = 2
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+
+# --- tier 3 switch ---
+# DPID 3 because this is actually the t2switch with a loop
+[[switches]]
+dpid = 2
+
+# --- tier 3 switch queues ---
+
+    # bash script to install queues
+    [switches.queues]
+    queue_script = "pica8_s3_queues.sh"
+    clear_queue_script = "pica8_s3_clear_queues.sh"
+
+# --- tier 3 switch meters ---
+
+    # meter 3 - actually unused
+    [[switches.meters]]
+    dpid = 2
+    flags = ["KBPS"]
+    meter_id = 3
+
+        [[switches.meters.bands]]
+        type = "DROP"
+        rate = 300000
+
+
+# --- tier 3 switch flows ---
+
+    # --- static flows (installed and then left untouched by the controller) ---
+
+    # ARP flow
+    # not needed because t2 and t3 share static flows
+    # [[switches.static_flows]]
+    # dpid = 2
+    # table_id = 0
+    # idle_timeout = 0
+    # hard_timeout = 0
+
+    #     [switches.static_flows.match]
+    #     eth_type = 2054
+
+    #     [[switches.static_flows.actions]]
+    #     type = "OUTPUT"
+    #     port = "FLOOD"
+
+    # H3H1 flow
+    # not needed because t2 and t3 share static flows
+    # [[switches.static_flows]]
+    # dpid = 2
+    # table_id = 0
+    # idle_timeout = 0
+    # hard_timeout = 0
+
+    #     [switches.static_flows.match]
+    #     eth_type = 2048
+    #     ipv4_src = "192.168.2.3"
+    #     ipv4_dst = "192.168.2.1"
+
+    #     [[switches.static_flows.actions]]
+    #     type = "OUTPUT"
+    #     port = 1
+
+    # H3H2 flow
+    # not needed because t2 and t3 share static flows
+    # [[switches.static_flows]]
+    # dpid = 2
+    # table_id = 0
+    # idle_timeout = 0
+    # hard_timeout = 0
+
+    #     [switches.static_flows.match]
+    #     eth_type = 2048
+    #     ipv4_src = "192.168.2.3"
+    #     ipv4_dst = "192.168.2.2"
+
+    #     [[switches.static_flows.actions]]
+    #     type = "OUTPUT"
+    #     port = 1
+
+    # --- main flows (controller will calculate the bandwidth for these) ---
+
+    # --- high priority flows (no DSCP) ---
+    # H1H3 flow - high priority
+    [[switches.flows]]
+    dpid = 2
+    cookie = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 300
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.1"
+        ipv4_dst = "192.168.2.3"
+        in_port = 4
+
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 2
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # H2H3 flow - high priority
+    [[switches.flows]]
+    dpid = 2
+    cookie = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 300
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.2"
+        ipv4_dst = "192.168.2.3"
+        in_port = 4
+
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 2
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    #--- medium priority flows (DSCP 10) ---
+    # H1H3 flow - medium priority
+    [[switches.flows]]
+    dpid = 2
+    cookie = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 400
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.1"
+        ipv4_dst = "192.168.2.3"
+        ip_dscp = 10
+        in_port = 4
+
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 1
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # H2H3 flow - medium priority
+    [[switches.flows]]
+    dpid = 2
+    cookie = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 400
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.2"
+        ipv4_dst = "192.168.2.3"
+        ip_dscp = 10
+        in_port = 4
+
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 1
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    #--- low priority flows (DSCP 12) ---
+    # H1H3 flow - low priority
+    [[switches.flows]]
+    dpid = 2
+    cookie = 1
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 500
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.1"
+        ipv4_dst = "192.168.2.3"
+        ip_dscp = 12
+        in_port = 4
+
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 0
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
+
+    # H2H3 flow - low priority
+    [[switches.flows]]
+    dpid = 2
+    cookie = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+    priority = 500
+
+        [switches.flows.match]
+        eth_type = 2048
+        ipv4_src = "192.168.2.2"
+        ipv4_dst = "192.168.2.3"
+        ip_dscp = 12
+        in_port = 4
+
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 0
+
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 3
