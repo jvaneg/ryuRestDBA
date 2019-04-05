@@ -118,21 +118,21 @@ def main(args):
 
                 flow_high_display = "S3 - High Priority:\t"
                 high_csv_string = ""
-                flow_high_display += "{} - {}\t  {} - {}\t  ".format(1, t3_flow_list[1].get_demand_bw(),
-                                                                     2, t3_flow_list[2].get_demand_bw())
-                high_csv_string += "{},{},".format(t3_flow_list[1].get_demand_bw(), t3_flow_list[2].get_demand_bw())
+                flow_high_display += "{} - {}\t  {} - {}\t  ".format(3, t3_flow_list[3].get_demand_bw(),
+                                                                     4, t3_flow_list[3].get_demand_bw())
+                high_csv_string += "{},{},".format(t3_flow_list[3].get_demand_bw(), t3_flow_list[4].get_demand_bw())
 
                 flow_med_display = "S3 - Medium Priority:\t"
                 med_csv_string = ""
-                flow_med_display += "{} - {}\t  {} - {}\t  ".format(3, t3_flow_list[3].get_demand_bw(),
-                                                                    4, t3_flow_list[4].get_demand_bw())
-                med_csv_string += "{},{},".format(t3_flow_list[3].get_demand_bw(), t3_flow_list[4].get_demand_bw())
+                flow_med_display += "{} - {}\t  {} - {}\t  ".format(5, t3_flow_list[5].get_demand_bw(),
+                                                                    6, t3_flow_list[6].get_demand_bw())
+                med_csv_string += "{},{},".format(t3_flow_list[5].get_demand_bw(), t3_flow_list[6].get_demand_bw())
 
                 flow_low_display = "S3 - Low Priority:\t"
                 low_csv_string = ""
-                flow_low_display += "{} - {}\t  {} - {}\t  ".format(5, t3_flow_list[5].get_demand_bw(),
-                                                                    6, t3_flow_list[6].get_demand_bw())
-                low_csv_string += "{},{},".format(t3_flow_list[5].get_demand_bw(), t3_flow_list[6].get_demand_bw())
+                flow_low_display += "{} - {}\t  {} - {}\t  ".format(7, t3_flow_list[7].get_demand_bw(),
+                                                                    8, t3_flow_list[8].get_demand_bw())
+                low_csv_string += "{},{},".format(t3_flow_list[7].get_demand_bw(), t3_flow_list[8].get_demand_bw())
 
                 flow_s2_high_display = "S2 - High Priority:\t"
                 s2_high_csv_string = ""

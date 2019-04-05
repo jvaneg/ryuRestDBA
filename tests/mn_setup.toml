@@ -389,7 +389,7 @@ dpid = 3
     # H1H3 flow - high priority
     [[switches.flows]]
     dpid = 3
-    cookie = 1
+    cookie = 3
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -411,7 +411,7 @@ dpid = 3
     # H2H3 flow - high priority
     [[switches.flows]]
     dpid = 3
-    cookie = 2
+    cookie = 4
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -434,7 +434,7 @@ dpid = 3
     # H1H3 flow - medium priority
     [[switches.flows]]
     dpid = 3
-    cookie = 3
+    cookie = 5
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -457,7 +457,7 @@ dpid = 3
     # H2H3 flow - medium priority
     [[switches.flows]]
     dpid = 3
-    cookie = 4
+    cookie = 6
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -481,7 +481,7 @@ dpid = 3
     # H1H3 flow - low priority
     [[switches.flows]]
     dpid = 3
-    cookie = 5
+    cookie = 7
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -504,7 +504,7 @@ dpid = 3
     # H2H3 flow - low priority
     [[switches.flows]]
     dpid = 3
-    cookie = 6
+    cookie = 8
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
