@@ -1,7 +1,7 @@
 # Basic config stuff
 [config]
 # Max rate in Mbps
-link_capacity = 800
+link_capacity = 600
 
 # --- Main switch ---
 [[switches]]
@@ -25,7 +25,7 @@ dpid = 1
         [[switches.meters.bands]]
         type = "DSCP_REMARK"
 	    prec_level = 10
-        rate = 200000
+        rate = 100000
 
     # meter 2
     [[switches.meters]]
@@ -36,7 +36,7 @@ dpid = 1
         [[switches.meters.bands]]
         type = "DSCP_REMARK"
 	    prec_level = 10
-        rate = 400000
+        rate = 200000
 
 
 # --- main switch flows ---
