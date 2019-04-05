@@ -158,7 +158,7 @@ dpid = 2
         [[switches.meters.bands]]
         type = "DSCP_REMARK"
 	    prec_level = 12
-        rate = 10000000
+        rate = 1000
 
     # meter 2
     [[switches.meters]]
@@ -169,7 +169,7 @@ dpid = 2
         [[switches.meters.bands]]
         type = "DSCP_REMARK"
 	    prec_level = 12
-        rate = 10000000
+        rate = 1000
 
 
 # --- tier 2 switch flows ---
@@ -228,7 +228,7 @@ dpid = 2
     # H1H3 flow - high priority
     [[switches.flows]]
     dpid = 2
-    cookie = 0
+    cookie = 10
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0
@@ -246,7 +246,7 @@ dpid = 2
     # H2H3 flow - high priority
     [[switches.flows]]
     dpid = 2
-    cookie = 0
+    cookie = 11
     table_id = 0
     idle_timeout = 0
     hard_timeout = 0

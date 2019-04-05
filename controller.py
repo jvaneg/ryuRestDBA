@@ -65,6 +65,7 @@ def main(args):
         #       poll tier 3 flows
         #       log data to file
         t1_flow_list = tier1_switch[2]
+        t2_flow_list = tier2_switch[2]
         t3_flow_list = tier3_switch[2]
         while(True):
             # poll t1 switch flows for flow information
@@ -85,13 +86,19 @@ def main(args):
 
             # logging data
             if(args.log is not None):
-                # TODO: poll t3 switch for flow data
+                # poll t3 switch for flow data
                 t3_flow_bytes, t3_timestamp = switchTools.get_flow_bytes(tier3_switch[0])
                 # calculate demand bw for t3 flows (high, med, low)
                 for flow_id, flow in t3_flow_list.items():
                     flow.update_demand_bw(t3_flow_bytes[flow_id], t3_timestamp)
 
-                flow_demand_display = "Demand:\t"
+                # poll t2 switch for flow data
+                t2_flow_bytes, t2_timestamp = switchTools.get_flow_bytes(tier2_switch[0])
+                # calculate demand bw for t2 flows (min, over min)
+                for flow_id, flow in t2_flow_list.items():
+                    flow.update_demand_bw(t2_flow_bytes[flow_id], t2_timestamp)
+
+                flow_demand_display = "S1 - Demand:\t"
                 demand_csv_string = ""
                 for flow_id, flow in t1_flow_list.items():
                     flow_demand_display += "{} - {}\t  ".format(flow_id, flow.get_demand_bw())
@@ -109,29 +116,43 @@ def main(args):
                     flow_min_display += "{} - {}\t  ".format(flow_id, flow.get_minimum_rate())
                     min_csv_string += "{},".format(flow.get_minimum_rate())
 
-                flow_high_display = "High Priority:\t"
+                flow_high_display = "S3 - High Priority:\t"
                 high_csv_string = ""
                 flow_high_display += "{} - {}\t  {} - {}\t  ".format(1, t3_flow_list[1].get_demand_bw(),
                                                                      2, t3_flow_list[2].get_demand_bw())
                 high_csv_string += "{},{},".format(t3_flow_list[1].get_demand_bw(), t3_flow_list[2].get_demand_bw())
 
-                flow_med_display = "Medium Priority:\t"
+                flow_med_display = "S3 - Medium Priority:\t"
                 med_csv_string = ""
                 flow_med_display += "{} - {}\t  {} - {}\t  ".format(3, t3_flow_list[3].get_demand_bw(),
                                                                     4, t3_flow_list[4].get_demand_bw())
                 med_csv_string += "{},{},".format(t3_flow_list[3].get_demand_bw(), t3_flow_list[4].get_demand_bw())
 
-                flow_low_display = "Low Priority:\t"
+                flow_low_display = "S3 - Low Priority:\t"
                 low_csv_string = ""
                 flow_low_display += "{} - {}\t  {} - {}\t  ".format(5, t3_flow_list[5].get_demand_bw(),
                                                                     6, t3_flow_list[6].get_demand_bw())
                 low_csv_string += "{},{},".format(t3_flow_list[5].get_demand_bw(), t3_flow_list[6].get_demand_bw())
+
+                flow_s2_high_display = "S2 - High Priority:\t"
+                s2_high_csv_string = ""
+                flow_s2_high_display += "{} - {}\t  {} - {}\t  ".format(10, t2_flow_list[10].get_demand_bw(),
+                                                                        11, t2_flow_list[11].get_demand_bw())
+                s2_high_csv_string += "{},{},".format(t2_flow_list[10].get_demand_bw(), t2_flow_list[11].get_demand_bw())
+
+                flow_s2_rmk_display = "S2 - Remarked:\t"
+                s2_rmk_csv_string = ""
+                flow_s2_rmk_display += "{} - {}\t  {} - {}\t  ".format(1, t3_flow_list[1].get_demand_bw(),
+                                                                        2, t3_flow_list[2].get_demand_bw())
+                s2_rmk_csv_string += "{},{},".format(t3_flow_list[2].get_demand_bw(), t3_flow_list[2].get_demand_bw())
 
                 # display stuff
                 print(flow_min_display)
                 print(flow_demand_display)
                 print("Excess:\t{} Mbps".format(excess_bandwidth))
                 print(flow_allocated_display)
+                print(flow_s2_high_display)
+                print(flow_s2_rmk_display)
                 print(flow_high_display)
                 print(flow_med_display)
                 print(flow_low_display)
