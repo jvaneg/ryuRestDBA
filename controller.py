@@ -1,6 +1,7 @@
 # stdlib imports
 import argparse
 import time
+import traceback
 from pathlib import Path
 
 # my module imports
@@ -172,8 +173,8 @@ def main(args):
             t1_flow_bytes, t1_timestamp = switchTools.get_flow_bytes(tier1_switch[0])
     except (KeyboardInterrupt, SystemExit):
         pass
-    except Exception as e:
-        print(e)
+    except Exception:
+        print(traceback.format_exc())
     finally:
         print("Cleaning up...")
 
