@@ -341,6 +341,19 @@ dpid = 2
 
     # --- static flows (installed and then left untouched by the controller) ---
 
+    # Dummy static flow flow
+    # not needed because t2 and t3 share static flows
+    [[switches.static_flows]]
+    dpid = 2
+    table_id = 0
+    idle_timeout = 0
+    hard_timeout = 0
+
+         [switches.static_flows.match]
+         eth_type = 2048
+         ipv4_src = "192.168.2.10"
+         ipv4_dst = "192.168.2.11"
+    
     # ARP flow
     # not needed because t2 and t3 share static flows
     # [[switches.static_flows]]
