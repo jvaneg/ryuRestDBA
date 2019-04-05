@@ -517,14 +517,14 @@ dpid = 3
         ip_dscp = 12
 
         # Enable this action for implicit drop
-        [[switches.flows.actions]]
-        type = "CLEAR_ACTIONS"
+        # [[switches.flows.actions]]
+        # type = "CLEAR_ACTIONS"
 
         # Enable these actions for overflow support
-        # [[switches.flows.actions]]
-        # type = "SET_QUEUE"
-        # queue_id = 0
+        [[switches.flows.actions]]
+        type = "SET_QUEUE"
+        queue_id = 0
 
-        # [[switches.flows.actions]]
-        # type = "OUTPUT"
-        # port = 2
+        [[switches.flows.actions]]
+        type = "OUTPUT"
+        port = 2

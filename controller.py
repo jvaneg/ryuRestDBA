@@ -140,8 +140,9 @@ def main(args):
                 # log to file
                 # log csv line format:
                 # excess,demand_h1,demand_h2,alloc_h1,alloc_h2,high_h1,high_h2,med_h1,med_h2,low_h1,low_h2,min_h1,min_h2,
-                log_file.write("{},{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string,
-                                                  high_csv_string, med_csv_string, low_csv_string, min_csv_string))
+                log_file.write("{},{}{}{}{}{}{}\n".format(excess_bandwidth, demand_csv_string, allocated_csv_string,
+                                                          high_csv_string, med_csv_string,
+                                                          low_csv_string, min_csv_string))
 
             # wait
             time.sleep(1)
