@@ -136,15 +136,15 @@ def main(args):
 
                 flow_s2_high_display = "S2 - High Priority:\t"
                 s2_high_csv_string = ""
-                flow_s2_high_display += "{} - {}\t  {} - {}\t  ".format(7, t2_flow_list[7].get_demand_bw(),
-                                                                        8, t2_flow_list[8].get_demand_bw())
-                s2_high_csv_string += "{},{},".format(t2_flow_list[7].get_demand_bw(), t2_flow_list[8].get_demand_bw())
+                flow_s2_high_display += "{} - {}\t  {} - {}\t  ".format(10, t2_flow_list[10].get_demand_bw(),
+                                                                        11, t2_flow_list[11].get_demand_bw())
+                s2_high_csv_string += "{},{},".format(t2_flow_list[10].get_demand_bw(), t2_flow_list[11].get_demand_bw())
 
                 flow_s2_rmk_display = "S2 - Remarked:\t"
                 s2_rmk_csv_string = ""
-                flow_s2_rmk_display += "{} - {}\t  {} - {}\t  ".format(1, t3_flow_list[1].get_demand_bw(),
-                                                                       2, t3_flow_list[2].get_demand_bw())
-                s2_rmk_csv_string += "{},{},".format(t3_flow_list[1].get_demand_bw(), t3_flow_list[2].get_demand_bw())
+                flow_s2_rmk_display += "{} - {}\t  {} - {}\t  ".format(1, t2_flow_list[1].get_demand_bw(),
+                                                                       2, t2_flow_list[2].get_demand_bw())
+                s2_rmk_csv_string += "{},{},".format(t2_flow_list[1].get_demand_bw(), t2_flow_list[2].get_demand_bw())
 
                 # display stuff
                 print(flow_min_display)
