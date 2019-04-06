@@ -33,6 +33,7 @@ dpid = 1
         type = "DSCP_REMARK"
 	    prec_level = 10
         rate = 100000
+        burst_size = 100000
 
     # meter 2
     [[switches.meters]]
@@ -44,6 +45,7 @@ dpid = 1
         type = "DSCP_REMARK"
 	    prec_level = 10
         rate = 200000
+        burst_size = 200000
 
 
 # --- main switch flows ---
@@ -164,6 +166,7 @@ dpid = 2
         type = "DSCP_REMARK"
 	    prec_level = 12
         rate = 1000
+        burst_size = 1000
 
     # meter 2
     [[switches.meters]]
@@ -175,6 +178,7 @@ dpid = 2
         type = "DSCP_REMARK"
 	    prec_level = 12
         rate = 1000
+        burst_size = 1000
 
 
 # --- tier 2 switch flows ---
@@ -525,13 +529,18 @@ dpid = 2
         ip_dscp = 12
         in_port = 4
 
+        # Enable this action for implicit drop
         [[switches.flows.actions]]
-        type = "SET_QUEUE"
-        queue_id = 0
+        type = "CLEAR_ACTIONS"
 
-        [[switches.flows.actions]]
-        type = "OUTPUT"
-        port = 3
+        # Enable these actions for overflow support
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 0
+
+        # [[switches.flows.actions]]
+        # type = "OUTPUT"
+        # port = 3
 
     # H2H3 flow - low priority
     [[switches.flows]]
@@ -549,10 +558,15 @@ dpid = 2
         ip_dscp = 12
         in_port = 4
 
+        # Enable this action for implicit drop
         [[switches.flows.actions]]
-        type = "SET_QUEUE"
-        queue_id = 0
+        type = "CLEAR_ACTIONS"
 
-        [[switches.flows.actions]]
-        type = "OUTPUT"
-        port = 3
+        # Enable these actions for overflow support
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 0
+
+        # [[switches.flows.actions]]
+        # type = "OUTPUT"
+        # port = 3

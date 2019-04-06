@@ -13,7 +13,7 @@ class Flow:
         self.properties = property_dict
         self.prev_byte_count = 0
         self.prev_polled_time = datetime.now()
-        self.prev_demand_bws = [0, 0, 0]
+        self.prev_demand_bws = [0, 0]
         self.demand_bandwidth = 0
         self.allocated_bw = 0
         self.allocated_excess_share = 0

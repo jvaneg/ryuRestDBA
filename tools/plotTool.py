@@ -137,8 +137,8 @@ def full_graph(csv_data):
     )
     h1_actual_trace = go.Scatter(
         x=csv_data["x_axis"],
-        y=csv_data["actual_h2h3"],
-        name="Actual H2->H3",
+        y=csv_data["actual_h1h3"],
+        name="Actual H1->H3",
         line=dict(
             color=D_YELLOW,
             width=TWO_LINE_SIZE,
@@ -192,7 +192,7 @@ def h1_graph(csv_data):
     demand_trace = go.Scatter(
         x=csv_data["x_axis"],
         y=csv_data["demand_h1h3"],
-        name="Demand H1->H3 Bandwidth",
+        name="Demand H1->H3",
         line=dict(
             color=D_RED,
             width=ONE_LINE_SIZE,
@@ -273,7 +273,7 @@ def h2_graph(csv_data):
     demand_trace = go.Scatter(
         x=csv_data["x_axis"],
         y=csv_data["demand_h2h3"],
-        name="Demand H2->H3 Bandwidth",
+        name="Demand H2->H3",
         line=dict(
             color=D_RED,
             width=ONE_LINE_SIZE,
