@@ -11,6 +11,7 @@ flake8-commas = "*"
 flake8-bugbear = "*"
 flake8-pytest = "*"
 pep8-naming = "*"
+wheel = "*"
 
 [packages]
 toml = "*"

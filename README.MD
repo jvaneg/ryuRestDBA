@@ -6,6 +6,12 @@ cd ryuRestDBA
 pipenv install
 ```
 
+# Learn DPIDs
+To learn the DPIDs of the switches the controller is connected to:
+```
+pipenv run python ./getDPIDs.py
+```
+
 # Run (mininet)
 Note: Requires Aaron's custom ovs on mininet (TODO: get install intructions from him).
 
@@ -50,3 +56,13 @@ On host 1 and host 2 terminals:
 iperf -c 10.0.0.3 -u -b 400M -t 30 -p 5503
 ```
 Note: Do not try to use a demand higher than the network can support or you will drop many packets.
+
+# Plot tool
+Note: plotTool depends on orca to output graphs. Install orca with:
+```
+npm install -g electron@1.8.4 orca
+```
+To plot the resulting data:
+```
+pipenv run ./tools/plotTool.py [-h] [-o output_name] [-gt graph_title] [-t graph_type] target_csv
+```

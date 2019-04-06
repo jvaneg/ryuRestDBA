@@ -6,6 +6,8 @@ import plotly.graph_objs as go
 import plotly.io as pio
 
 
+# Graphs the output csvs from the controller.py
+# Only works for the H1,H2 -> H3 setup
 def main(args):
     # check if target file exists and load it
     if(not Path(args.target_csv).is_file()):
@@ -31,6 +33,8 @@ def main(args):
         "low_h2h3": [],
         "minrate_h1": [],
         "minrate_h2": [],
+        "actual_h1h3": [],
+        "actual_h2h3": [],
         "x_axis": [],
     }
 
@@ -58,6 +62,9 @@ def main(args):
 
             csv_data["minrate_h1"].append(float(row[11]))
             csv_data["minrate_h2"].append(float(row[12]))
+
+        csv_data["actual_h1h3"] = [sum(pair) for pair in zip(csv_data["high_h1h3"], csv_data["med_h1h3"])]
+        csv_data["actual_h2h3"] = [sum(pair) for pair in zip(csv_data["high_h2h3"], csv_data["med_h2h3"])]
 
         csv_data["x_axis"] = list(range(len(csv_data["excess"])))
 
@@ -95,6 +102,8 @@ def main(args):
 # H2 demand
 # H1 alloc
 # H2 alloc
+# H1 actual
+# H2 actual
 def full_graph(csv_data):
     # Create and style traces
 
@@ -112,7 +121,7 @@ def full_graph(csv_data):
         y=csv_data["demand_h1h3"],
         name="Demand H1->H3",
         line=dict(
-            color=WARM_1,
+            color=D_RED,
             width=TWO_LINE_SIZE,
             ),
     )
@@ -121,9 +130,19 @@ def full_graph(csv_data):
         y=csv_data["allocation_h1h3"],
         name="Allocation H1->H3",
         line=dict(
-            color=WARM_2,
+            color=D_ORANGE,
             width=TWO_LINE_SIZE,
             dash="dot",  # dash options include 'dash', 'dot', and 'dashdot'
+            ),
+    )
+    h1_actual_trace = go.Scatter(
+        x=csv_data["x_axis"],
+        y=csv_data["actual_h2h3"],
+        name="Actual H2->H3",
+        line=dict(
+            color=D_YELLOW,
+            width=TWO_LINE_SIZE,
+            dash="dashdot",
             ),
     )
     h2_demand_trace = go.Scatter(
@@ -131,7 +150,7 @@ def full_graph(csv_data):
         y=csv_data["demand_h2h3"],
         name="Demand H2->H3",
         line=dict(
-            color=COLD_1,
+            color=D_GREEN,
             width=TWO_LINE_SIZE,
             ),
     )
@@ -140,13 +159,23 @@ def full_graph(csv_data):
         y=csv_data["allocation_h2h3"],
         name="Allocation H2->H3",
         line=dict(
-            color=COLD_2,
+            color=D_BLUE,
             width=TWO_LINE_SIZE,
             dash="dot",
             ),
     )
+    h2_actual_trace = go.Scatter(
+        x=csv_data["x_axis"],
+        y=csv_data["actual_h2h3"],
+        name="Actual H2->H3",
+        line=dict(
+            color=D_PURPLE,
+            width=TWO_LINE_SIZE,
+            dash="dashdot",
+            ),
+    )
 
-    data = [h1_demand_trace, h2_demand_trace, h1_alloc_trace, h2_alloc_trace]
+    data = [h1_demand_trace, h2_demand_trace, h1_alloc_trace, h2_alloc_trace, h1_actual_trace, h2_actual_trace]
     return data
 
 
@@ -154,18 +183,18 @@ def full_graph(csv_data):
 # shows:
 # H1 demand
 # H1 allocation
+# H1 actual
 # H1 high priority
 # H1 med priority
 # H1 low priority (dropped)
 def h1_graph(csv_data):
     # Create and style traces
-
     demand_trace = go.Scatter(
         x=csv_data["x_axis"],
         y=csv_data["demand_h1h3"],
         name="Demand H1->H3 Bandwidth",
         line=dict(
-            color=WARM_1,
+            color=D_RED,
             width=ONE_LINE_SIZE,
             ),
     )
@@ -174,9 +203,19 @@ def h1_graph(csv_data):
         y=csv_data["allocation_h1h3"],
         name="Allocation H1->H3",
         line=dict(
-            color=WARM_2,
+            color=D_ORANGE,
             width=ONE_LINE_SIZE,
             dash="dot",
+            ),
+    )
+    actual_trace = go.Scatter(
+        x=csv_data["x_axis"],
+        y=csv_data["actual_h1h3"],
+        name="Actual H1->H3",
+        line=dict(
+            color=D_YELLOW,
+            width=TWO_LINE_SIZE,
+            dash="dashdot",
             ),
     )
     high_trace = go.Scatter(
@@ -184,9 +223,8 @@ def h1_graph(csv_data):
         y=csv_data["high_h1h3"],
         name="High Priority H1->H3",
         line=dict(
-            color=WARM_3,
+            color=D_GREEN,
             width=ONE_LINE_SIZE,
-            dash="dash",
             ),
     )
     med_trace = go.Scatter(
@@ -194,9 +232,8 @@ def h1_graph(csv_data):
         y=csv_data["med_h1h3"],
         name="Medium Priority H1->H3",
         line=dict(
-            color=WARM_4,
+            color=D_BLUE,
             width=ONE_LINE_SIZE,
-            dash="dashdot",
             ),
     )
     low_trace = go.Scatter(
@@ -204,7 +241,7 @@ def h1_graph(csv_data):
         y=csv_data["low_h1h3"],
         name="Low Priority H1->H3",
         line=dict(
-            color=WARM_5,
+            color=D_PURPLE,
             width=ONE_LINE_SIZE,
             ),
     )
@@ -218,7 +255,7 @@ def h1_graph(csv_data):
             dash="dash",
             ),
     )
-    data = [minrate_trace, demand_trace, alloc_trace, high_trace, med_trace, low_trace]
+    data = [minrate_trace, demand_trace, alloc_trace, actual_trace, high_trace, med_trace, low_trace]
     return data
 
 
@@ -226,6 +263,7 @@ def h1_graph(csv_data):
 # shows:
 # H2 demand
 # H2 allocation
+# H2 actual
 # H2 high priority
 # H2 med priority
 # H2 low priority (dropped)
@@ -237,7 +275,7 @@ def h2_graph(csv_data):
         y=csv_data["demand_h2h3"],
         name="Demand H2->H3 Bandwidth",
         line=dict(
-            color=COLD_1,
+            color=D_RED,
             width=ONE_LINE_SIZE,
             ),
     )
@@ -246,9 +284,19 @@ def h2_graph(csv_data):
         y=csv_data["allocation_h2h3"],
         name="Allocation H2->H3",
         line=dict(
-            color=COLD_2,
+            color=D_ORANGE,
             width=ONE_LINE_SIZE,
             dash="dot",
+            ),
+    )
+    actual_trace = go.Scatter(
+        x=csv_data["x_axis"],
+        y=csv_data["actual_h2h3"],
+        name="Actual H2->H3",
+        line=dict(
+            color=D_YELLOW,
+            width=TWO_LINE_SIZE,
+            dash="dashdot",
             ),
     )
     high_trace = go.Scatter(
@@ -256,9 +304,8 @@ def h2_graph(csv_data):
         y=csv_data["high_h2h3"],
         name="High Priority H2->H3",
         line=dict(
-            color=COLD_3,
+            color=D_GREEN,
             width=ONE_LINE_SIZE,
-            dash="dashdot",
             ),
     )
     med_trace = go.Scatter(
@@ -266,9 +313,8 @@ def h2_graph(csv_data):
         y=csv_data["med_h2h3"],
         name="Medium Priority H2->H3",
         line=dict(
-            color=COLD_4,
+            color=D_BLUE,
             width=ONE_LINE_SIZE,
-            dash="dash",
             ),
     )
     low_trace = go.Scatter(
@@ -276,7 +322,7 @@ def h2_graph(csv_data):
         y=csv_data["low_h2h3"],
         name="Low Priority H2->H3",
         line=dict(
-            color=COLD_5,
+            color=D_PURPLE,
             width=ONE_LINE_SIZE,
             ),
     )
@@ -290,9 +336,11 @@ def h2_graph(csv_data):
             dash="dash",
             ),
     )
-    data = [minrate_trace, demand_trace, alloc_trace, high_trace, med_trace, low_trace]
+    data = [minrate_trace, demand_trace, alloc_trace, actual_trace, high_trace, med_trace, low_trace]
     return data
 
+
+# --- Constants ---
 
 # warm palette
 WARM_1 = "#900C3F"
@@ -307,6 +355,15 @@ COLD_2 = "#34699A"
 COLD_3 = "#408AB4"
 COLD_4 = "#65C6C4"
 COLD_5 = "#ACDEAA"
+
+# distinct palette
+D_RED = "#E6194B"
+D_ORANGE = "#F58231"
+D_YELLOW = "#FFE119"
+D_OLIVE = "#808000"
+D_GREEN = "#3CB44B"
+D_BLUE = "#4363D8"
+D_PURPLE = "#911EB4"
 
 # other colours
 BLACK = "#000000"

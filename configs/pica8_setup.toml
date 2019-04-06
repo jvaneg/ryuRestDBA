@@ -3,6 +3,13 @@
 # Max rate in Mbps
 link_capacity = 600
 
+# Choice of dynamic allocation algorithm
+# 0 - None
+# 1 - egalitarian fairness
+# 2 - proportial fairness
+# 3 - hybrid proportional fairness
+algorithm = 1
+
 # --- Main switch ---
 [[switches]]
 dpid = 1

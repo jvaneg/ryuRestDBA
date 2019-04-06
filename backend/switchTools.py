@@ -1,5 +1,4 @@
 # stdlib imports
-import pprint
 import subprocess
 from datetime import datetime
 import time
@@ -85,19 +84,10 @@ def clean_switches(config_file_path):
 #   switch - ryurest switch object representing the switch the meters will be installed on
 # Returns:
 #   meter_list - dictionary of meter objects installed on the switch, indexed by meter id
-#
-# TODO: currently outputting the config dictionaries as a debug thing, remove that when its done
 def install_meters(meter_configs, switch):
-
-    pp = pprint.PrettyPrinter(indent=2)
-
     meter_list = {}
 
-    print("\n---Meters---")
     for meter_config in meter_configs:
-        print("Meter id: {}".format(meter_config["meter_id"]))
-        pp.pprint(meter_config)
-
         switch.add_meter(meter_config)
         meter = Meter(meter_config)
         meter_list[meter.get_id()] = meter
@@ -115,22 +105,10 @@ def install_meters(meter_configs, switch):
 # Returns:
 #   flow_list - dictionary of flow objects installed on the switch, indexed by cookie field
 #               (I'm using the cookie field as a pseudo flow_id since the flows aren't given actual ids in Ryu)
-#
-# TODO: currently outputting the config dictionaries as a debug thing, remove that when its done
 def install_flows(flow_configs, switch, save_results):
-
-    pp = pprint.PrettyPrinter(indent=2)
-
     flow_list = {}
 
-    print("\n---Flows---")
     for flow_config in flow_configs:
-        try:
-            print("Flow id: {}".format(flow_config["cookie"]))
-        except Exception:
-            print("not an id'd flow")
-        pp.pprint(flow_config)
-
         switch.add_flow(flow_config)
 
         if(save_results):
@@ -151,8 +129,6 @@ def install_flows(flow_configs, switch, save_results):
 # Args:
 #   queue_configs - dictionary containing queue config information (in this case just the script name)
 def install_queues(queue_configs):
-
-    print("\n---Queues---")
     output = subprocess.check_output(["bash", str(queue_configs["queue_script"])])
     print(str(output, "utf-8"))
     time.sleep(2)  # wait for queues to install on remote machine

@@ -24,31 +24,21 @@ def main(args):
 
     link_capacity = config["link_capacity"]
 
+    algorithm = config["algorithm"]
+    if(algorithm not in [ALG_NONE, ALG_EGAL, ALG_PROP, ALG_HYBR]):
+        print("Error: Invalid algorithm in config file")
+        exit(-1)
+
     # setup switches
     switch_list = switchTools.setup_switches(Path(args.config_file))
-
-    print(switch_list)  # TODO: remove debug
-
     tier1_switch = switch_list[TIER1_SWITCH]
     tier2_switch = switch_list[TIER2_SWITCH]
     tier3_switch = switch_list[TIER3_SWITCH]
 
-    # get initial flow bytes usage TODO: remove this
-    t1_flow_bytes, t1_timestamp = switchTools.get_flow_bytes(tier1_switch[0])
-
-    print(t1_timestamp)    # TODO: remove debug
-    print(t1_flow_bytes)
-
     # link flows
     link_flows(tier1_switch, tier2_switch)
 
-    print("Link capacity: {}".format(link_capacity))  # TODO: remove debug
-
-    # TODO: remove this debug stuff
-    t1_flow_list = tier1_switch[2]
-    for flow_id, flow in t1_flow_list.items():
-        print("Flow: {} - Meter: {} - Min rate: {} Mbps".format(flow_id, flow.get_meter(), flow.get_minimum_rate()))
-
+    print("Link capacity: {}".format(link_capacity))
     print("--- Flow bandwidth ---")
 
     # open log file
@@ -66,12 +56,12 @@ def main(args):
         #       poll tier 3 flows
         #       log data to file
 
-        t1_flow_list = tier1_switch[2]
-        t2_flow_list = tier2_switch[2]
-        t3_flow_list = tier3_switch[2]
+        t1_flow_list = tier1_switch[FLOWS_INDEX]
+        t2_flow_list = tier2_switch[FLOWS_INDEX]
+        t3_flow_list = tier3_switch[FLOWS_INDEX]
         while(True):
             # poll t1 switch flows for flow information
-            t1_flow_bytes, t1_timestamp = switchTools.get_flow_bytes(tier1_switch[0])
+            t1_flow_bytes, t1_timestamp = switchTools.get_flow_bytes(tier1_switch[SWITCH_INDEX])
 
             # calculate demand bandwidth for each flow
             for flow_id, flow in t1_flow_list.items():
@@ -80,22 +70,27 @@ def main(args):
             # calculate excess bandwidth TODO: may not need this with different alg implementation
             excess_bandwidth = calc_excess_bandwidth(t1_flow_list, link_capacity)
 
-            # calculate bandwidth allocation for each flow TODO: value in config to determine which alg
-            dbaAlgorithms.allocate_egalitarian(t1_flow_list, excess_bandwidth)
+            # calculate bandwidth allocation for each flow
+            if(algorithm == ALG_EGAL):
+                dbaAlgorithms.allocate_egalitarian(t1_flow_list, excess_bandwidth)
+            elif(algorithm == ALG_PROP):
+                dbaAlgorithms.allocate_proportional(t1_flow_list, excess_bandwidth)
+            elif(algorithm == ALG_HYBR):
+                dbaAlgorithms.allocate_hybrid(t1_flow_list, excess_bandwidth, HYBRID_FRACTION)
 
             # install allocated bandwidth changes on t2 switch meters
-            switchTools.update_meters(tier2_switch[0], tier2_switch[2])
+            switchTools.update_meters(tier2_switch[SWITCH_INDEX], tier2_switch[FLOWS_INDEX])
 
             # logging data
             if(args.log is not None):
                 # poll t3 switch for flow data
-                t3_flow_bytes, t3_timestamp = switchTools.get_flow_bytes(tier3_switch[0])
+                t3_flow_bytes, t3_timestamp = switchTools.get_flow_bytes(tier3_switch[SWITCH_INDEX])
                 # calculate demand bw for t3 flows (high, med, low)
                 for flow_id, flow in t3_flow_list.items():
                     flow.update_demand_bw(t3_flow_bytes[flow_id], t3_timestamp)
 
                 # poll t2 switch for flow data
-                t2_flow_bytes, t2_timestamp = switchTools.get_flow_bytes(tier2_switch[0])
+                t2_flow_bytes, t2_timestamp = switchTools.get_flow_bytes(tier2_switch[SWITCH_INDEX])
                 # calculate demand bw for t2 flows (min, over min)
                 for flow_id, flow in t2_flow_list.items():
                     flow.update_demand_bw(t2_flow_bytes[flow_id], t2_timestamp)
@@ -123,25 +118,29 @@ def main(args):
                 high_csv_string = ""
                 flow_high_display += "{} - {}\t  {} - {}\t  ".format(3, t3_flow_list[3].get_demand_bw(),
                                                                      4, t3_flow_list[3].get_demand_bw())
-                high_csv_string += "{},{},".format(t3_flow_list[3].get_demand_bw(), t3_flow_list[4].get_demand_bw())
+                high_csv_string += "{},{},".format(t3_flow_list[3].get_demand_bw(),
+                                                   t3_flow_list[4].get_demand_bw())
 
                 flow_med_display = "S3 - Medium Priority:\t"
                 med_csv_string = ""
                 flow_med_display += "{} - {}\t  {} - {}\t  ".format(5, t3_flow_list[5].get_demand_bw(),
                                                                     6, t3_flow_list[6].get_demand_bw())
-                med_csv_string += "{},{},".format(t3_flow_list[5].get_demand_bw(), t3_flow_list[6].get_demand_bw())
+                med_csv_string += "{},{},".format(t3_flow_list[5].get_demand_bw(),
+                                                  t3_flow_list[6].get_demand_bw())
 
                 flow_low_display = "S3 - Low Priority:\t"
                 low_csv_string = ""
                 flow_low_display += "{} - {}\t  {} - {}\t  ".format(7, t3_flow_list[7].get_demand_bw(),
                                                                     8, t3_flow_list[8].get_demand_bw())
-                low_csv_string += "{},{},".format(t3_flow_list[7].get_demand_bw(), t3_flow_list[8].get_demand_bw())
+                low_csv_string += "{},{},".format(t3_flow_list[7].get_demand_bw(),
+                                                  t3_flow_list[8].get_demand_bw())
 
                 flow_s2_high_display = "S2 - High Priority:\t"
                 s2_high_csv_string = ""
                 flow_s2_high_display += "{} - {}\t  {} - {}\t  ".format(10, t2_flow_list[10].get_demand_bw(),
                                                                         11, t2_flow_list[11].get_demand_bw())
-                s2_high_csv_string += "{},{},".format(t2_flow_list[10].get_demand_bw(), t2_flow_list[11].get_demand_bw())
+                s2_high_csv_string += "{},{},".format(t2_flow_list[10].get_demand_bw(),
+                                                      t2_flow_list[11].get_demand_bw())
 
                 flow_s2_rmk_display = "S2 - Remarked:\t"
                 s2_rmk_csv_string = ""
@@ -169,7 +168,7 @@ def main(args):
                                                           low_csv_string, min_csv_string))
 
             # wait
-            time.sleep(1)
+            time.sleep(WAIT_SECONDS)
 
     except (KeyboardInterrupt, SystemExit):
         pass
@@ -221,10 +220,28 @@ def link_flows(tier1_switch_tuple, tier2_switch_tuple):
             pass
 
 
-# Constants
+# --- Constants ---
+# Switches
 TIER1_SWITCH = 0
 TIER2_SWITCH = 1
 TIER3_SWITCH = 2
+
+# Algorithms
+ALG_NONE = 0
+ALG_EGAL = 1
+ALG_PROP = 2
+ALG_HYBR = 3
+
+# Alg options
+HYBRID_FRACTION = 0.10
+
+# Triplet indexes
+SWITCH_INDEX = 0
+METERS_INDEX = 1
+FLOWS_INDEX = 2
+
+# Time
+WAIT_SECONDS = 1
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
