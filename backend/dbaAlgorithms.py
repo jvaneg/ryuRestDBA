@@ -113,7 +113,7 @@ def allocate_hybrid(flow_list, excess_bandwidth, max_fraction):
     for flow in active_flows:
         active_flow_maximums[flow.get_id()] = (flow.get_minimum_rate() * max_fraction) - flow.get_minimum_rate()
 
-    total_flow_maximum = sum(active_flow_maximums.items())
+    total_flow_maximum = sum(active_flow_maximums.values())
 
     # if the sum of the fraction maximums is more than the excess bandwidth
     # just do proportional allocation instead (basically the same)
