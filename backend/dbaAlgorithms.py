@@ -62,8 +62,9 @@ def new_allocate_proportional(flow_list, excess_bandwidth):
     active_flows.sort(key=sort_by_demand)
 
     remaining_excess = excess_bandwidth
-    active_flows_copy = copy(active_flows)  # create a shallow copy to iterate while removing
     while(active_flows and (int(remaining_excess) > 0)):
+        active_flows_copy = copy(active_flows)  # create a shallow copy to iterate while removing
+
         for flow in active_flows_copy:
             flow_demand = flow.get_demand_bw()
             flow_min = flow.get_minimum_rate()
