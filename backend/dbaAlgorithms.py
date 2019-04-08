@@ -111,7 +111,7 @@ def allocate_hybrid(flow_list, excess_bandwidth, max_fraction):
     active_flow_maximums = {}
 
     for flow in active_flows:
-        active_flow_maximums[flow.get_id()] = (flow.get_minimum_rate() * max_fraction) - flow.get_minimum_rate()
+        active_flow_maximums[flow.get_id()] = (flow.get_minimum_rate() * max_fraction)
 
     total_flow_maximum = sum(active_flow_maximums.values())
 
@@ -130,6 +130,7 @@ def allocate_hybrid(flow_list, excess_bandwidth, max_fraction):
     active_flows.sort(key=sort_by_demand)
 
     remaining_excess = excess_bandwidth - total_flow_maximum
+    print("remaining excess - {}".format(remaining_excess))
     while(active_flows and (int(remaining_excess) > 0)):
         active_flows_copy = copy(active_flows)  # create a shallow copy to iterate while removing
 
@@ -142,28 +143,31 @@ def allocate_hybrid(flow_list, excess_bandwidth, max_fraction):
             flow_extra = flow_demand - flow_min - flow.allocated_bw
             flow_maximum = active_flow_maximums[flow.get_id()]
             flow_excess_share = flow.excess_share
+            print("{} - before  xs {}  rx {}".format(flow.get_id, flow_excess_share, remaining_excess))
 
             if(flow_demand <= flow_min):
                 flow.allocate_bw(flow_demand)
                 remaining_excess += flow_maximum
+                print("{} - path 1  xs {}  rx {}".format(flow.get_id, flow_excess_share, remaining_excess))
                 active_flows.remove(flow)
             elif(flow_extra <= flow_maximum):
                 flow.allocate_bw(flow_demand)
                 remaining_excess += (flow_maximum - flow_extra)
+                print("{} - path 2  fx {} fm {} xs {} rx {}".format(flow.get_id, flow_extra, flow_maximum, flow_excess_share, remaining_excess))
                 active_flows.remove(flow)
             elif(flow_extra <= flow_maximum + flow_excess_share):
                 flow.allocate_bw(flow_demand)
                 remaining_excess -= (flow_extra - flow_maximum)
+                print("{} - path 3  fx {} fm {} xs {} rx {}".format(flow.get_id, flow_extra, flow_maximum, flow_excess_share, remaining_excess))
                 active_flows.remove(flow)
             else:
                 flow.allocated_bw += flow_excess_share
                 remaining_excess -= flow_excess_share
+                print("{} - path 4  fx {} fm {} xs {} rx {}".format(flow.get_id, flow_extra, flow_maximum, flow_excess_share, remaining_excess))
 
     # if ran out of remaining bandwidth
     for flow in active_flows:
         flow.allocate_bw(flow.get_minimum_rate() + flow.allocated_bw)
-
-    return
 
     return
 
