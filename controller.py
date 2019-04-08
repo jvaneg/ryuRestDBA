@@ -67,7 +67,7 @@ def main(args):
             for flow_id, flow in t1_flow_list.items():
                 flow.update_demand_bw(t1_flow_bytes[flow_id], t1_timestamp)
 
-            # calculate excess bandwidth TODO: may not need this with different alg implementation
+            # calculate excess bandwidth
             excess_bandwidth = calc_excess_bandwidth(t1_flow_list, link_capacity)
 
             # calculate bandwidth allocation for each flow
@@ -75,7 +75,7 @@ def main(args):
                 dbaAlgorithms.allocate_egalitarian(t1_flow_list, excess_bandwidth)
             elif(algorithm == ALG_PROP):
                 # dbaAlgorithms.allocate_proportional(t1_flow_list, excess_bandwidth)
-                dbaAlgorithms.new_allocate_egalitarian(t1_flow_list, link_capacity)
+                dbaAlgorithms.new_allocate_egalitarian(t1_flow_list, excess_bandwidth)
             elif(algorithm == ALG_HYBR):
                 dbaAlgorithms.allocate_hybrid(t1_flow_list, excess_bandwidth, HYBRID_FRACTION)
 
