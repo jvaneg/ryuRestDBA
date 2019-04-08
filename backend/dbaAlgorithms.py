@@ -65,29 +65,38 @@ def new_allocate_proportional(flow_list, excess_bandwidth):
     while(active_flows and (int(remaining_excess) > 0)):
         active_flows_copy = copy(active_flows)  # create a shallow copy to iterate while removing
 
+        for flow in active_flows:
+            flow.excess_share = (remaining_excess * flow.get_minimum_rate()) / total_flow_weight
+        
         for flow in active_flows_copy:
             flow_demand = flow.get_demand_bw()
             flow_min = flow.get_minimum_rate()
-            flow_extra = flow_demand - flow_min
-            flow_excess_share = (remaining_excess * flow_min) / total_flow_weight
-
+            flow_extra = flow_demand - flow_min - flow.allocated_bw
+            flow_excess_share = flow.excess_share
+            print("{} - excess {}".format(flow.get_id(), flow_excess_share))
+            print(total_flow_weight)
+            
             if(flow_demand <= flow_min):
+                print("{} in case 1".format(flow.get_id()))
                 flow.allocate_bw(flow_demand)
                 total_flow_weight -= flow_min
                 active_flows.remove(flow)
             elif(flow_extra <= flow_excess_share):
+                print("{} in case 2 - fx {} xs {}".format(flow.get_id(), flow_extra, flow_excess_share))
                 flow.allocate_bw(flow_demand)
                 remaining_excess -= flow_extra
                 total_flow_weight -= flow_min
                 active_flows.remove(flow)
             else:
+                print("{} in case 3 - fx {} xs {}".format(flow.get_id(), flow_extra, flow_excess_share))
                 flow.allocated_bw += flow_excess_share
                 remaining_excess -= flow_excess_share
 
     # if ran out of remaining bandwidth
     for flow in active_flows:
         flow.allocate_bw(flow.get_minimum_rate() + flow.allocated_bw)
-
+        print("{} - ran out".format(flow.get_id()))
+        
     return
 
 

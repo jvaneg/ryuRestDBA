@@ -8,7 +8,7 @@ link_capacity = 600
 # 1 - egalitarian fairness
 # 2 - proportial fairness
 # 3 - hybrid proportional fairness
-algorithm = 1
+algorithm = 2
 
 # --- Main switch ---
 [[switches]]
