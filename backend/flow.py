@@ -16,7 +16,7 @@ class Flow:
         self.prev_demand_bws = [0, 0]
         self.demand_bandwidth = 0
         self.allocated_bw = 0
-        self.allocated_excess_share = 0
+        self.excess_share = 0
         self.meter = None
         self.linked_flow = None
 
