@@ -67,8 +67,8 @@ def new_allocate_egalitarian(flow_list, excess_bandwidth):
 
 
 # key function to sort flows by demand bw
-def sort_by_demand(flow_pair):
-    return flow_pair[1].get_demand_bw()
+def sort_by_demand(flow):
+    return flow.get_demand_bw()
 
 
 # TODO: change this to have an allocation cap but not allocate beyond the cap
