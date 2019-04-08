@@ -87,7 +87,7 @@ class Flow:
             self.linked_flow.set_meter_rate(self.allocated_bw - self.get_minimum_rate())
 
     def allocate_bw(self, allocated_bandwidth):
-        self.allocated_bandwidth = allocated_bandwidth
+        self.allocated_bw = allocated_bandwidth
         if(self.linked_flow is not None):
             self.linked_flow.set_meter_rate(self.allocated_bw - self.get_minimum_rate())
 
