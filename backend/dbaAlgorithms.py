@@ -36,13 +36,8 @@ def allocate_egalitarian(flow_list, excess_bandwidth):
     return
 
 
-# key function to sort flows by demand bw
-def sort_by_demand(flow):
-    return flow.get_demand_bw()
-
-
-# TODO: change this to have an allocation cap but not allocate beyond the cap
-def new_allocate_proportional(flow_list, excess_bandwidth):
+# weighted allocation based on min rates
+def allocate_proportional(flow_list, excess_bandwidth):
     active_flows = []
     # determine active flows (flows using bandwidth)
     for _flow_id, flow in flow_list.items():
@@ -94,38 +89,9 @@ def new_allocate_proportional(flow_list, excess_bandwidth):
     return
 
 
-# TODO: change this to have an allocation cap but not allocate beyond the cap
-def allocate_proportional(flow_list, excess_bandwidth):
-
-    active_flows = []
-
-    # determine active flows (flows using bandwidth)
-    for _flow_id, flow in flow_list.items():
-        if(flow.get_demand_bw() > 0):
-            active_flows.append(flow)
-        else:
-            flow.allocate(0, 0)
-
-    total_flow_weight = sum(flow.get_minimum_rate() for flow in active_flows)
-
-    # if no min rates are set just do egalitarian distribution
-    if(total_flow_weight <= 0):
-        allocate_egalitarian(flow_list, excess_bandwidth)
-        return
-
-    # calculate and allocate bandwidth
-    for flow in active_flows:
-
-        excess_share = (excess_bandwidth * flow.get_minimum_rate()) / total_flow_weight
-
-        if(flow.get_demand_bw() >= flow.get_minimum_rate()):
-            allocated_bandwidth = excess_share + flow.get_minimum_rate()
-        else:
-            allocated_bandwidth = excess_share + flow.get_demand_bw()
-
-        flow.allocate(allocated_bandwidth, excess_share)
-
-    return
+# key function to sort flows by demand bw
+def sort_by_demand(flow):
+    return flow.get_demand_bw()
 
 
 # TODO: change this to have an allocation cap but not allocate beyond the cap
@@ -194,6 +160,40 @@ def old_allocate_egalitarian(flow_list, excess_bandwidth):
 
     # allocate bandwidth
     for flow in active_flows:
+        if(flow.get_demand_bw() >= flow.get_minimum_rate()):
+            allocated_bandwidth = excess_share + flow.get_minimum_rate()
+        else:
+            allocated_bandwidth = excess_share + flow.get_demand_bw()
+
+        flow.allocate(allocated_bandwidth, excess_share)
+
+    return
+
+
+# deprecated
+def old_allocate_proportional(flow_list, excess_bandwidth):
+
+    active_flows = []
+
+    # determine active flows (flows using bandwidth)
+    for _flow_id, flow in flow_list.items():
+        if(flow.get_demand_bw() > 0):
+            active_flows.append(flow)
+        else:
+            flow.allocate(0, 0)
+
+    total_flow_weight = sum(flow.get_minimum_rate() for flow in active_flows)
+
+    # if no min rates are set just do egalitarian distribution
+    if(total_flow_weight <= 0):
+        allocate_egalitarian(flow_list, excess_bandwidth)
+        return
+
+    # calculate and allocate bandwidth
+    for flow in active_flows:
+
+        excess_share = (excess_bandwidth * flow.get_minimum_rate()) / total_flow_weight
+
         if(flow.get_demand_bw() >= flow.get_minimum_rate()):
             allocated_bandwidth = excess_share + flow.get_minimum_rate()
         else:

@@ -74,7 +74,7 @@ def main(args):
             if(algorithm == ALG_EGAL):
                 dbaAlgorithms.allocate_egalitarian(t1_flow_list, excess_bandwidth)
             elif(algorithm == ALG_PROP):
-                dbaAlgorithms.new_allocate_proportional(t1_flow_list, excess_bandwidth)
+                dbaAlgorithms.allocate_proportional(t1_flow_list, excess_bandwidth)
             elif(algorithm == ALG_HYBR):
                 dbaAlgorithms.allocate_hybrid(t1_flow_list, excess_bandwidth, HYBRID_FRACTION)
 

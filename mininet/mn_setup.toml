@@ -10,6 +10,9 @@ link_capacity = 600
 # 3 - hybrid proportional fairness
 algorithm = 1
 
+# if using alg 3, fraction allowed up to
+hybrid_fraction = 0.10
+
 # --- Main switch ---
 [[switches]]
 dpid = 1
