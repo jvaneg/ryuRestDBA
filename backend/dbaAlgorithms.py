@@ -49,13 +49,13 @@ def new_allocate_egalitarian(all_flow_list, link_capacity):
             flow.allocate_bw(flow_demand)
             remaining_excess -= flow_demand
             flows_ascending.remove((_flow_id, flow))
-        elif((flow_extra * (max_items - current_item + 1)) <= remaining_excess):
+        elif((flow_extra * (max_items - current_item + 1)) <= (remaining_excess - flow_min)):
             flow.allocate_bw(flow_demand)
             remaining_excess -= flow_demand
             flows_ascending.remove((_flow_id, flow))
         else:
             flow.allocate_bw(remaining_excess / (max_items - current_item + 1))
-            remaining_excess -= remaining_excess / (max_items - current_item + 1)
+            remaining_excess -= (remaining_excess / (max_items - current_item + 1))
             flows_ascending.remove((_flow_id, flow))
 
         current_item += 1
