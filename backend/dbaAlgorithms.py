@@ -48,22 +48,22 @@ def new_allocate_egalitarian(all_flow_list, link_capacity):
         if(flow_demand <= flow_min):
             flow.allocate_bw(flow_demand)
             remaining_excess -= flow_demand
-            flows_ascending.remove(flow)
+            flows_ascending.remove((_flow_id, flow))
         elif((flow_extra * (max_items - current_item + 1)) <= remaining_excess):
             flow.allocate_bw(flow_demand)
             remaining_excess -= flow_demand
-            flows_ascending.remove(flow)
+            flows_ascending.remove((_flow_id, flow))
         else:
             flow.allocate_bw(remaining_excess / (max_items - current_item + 1))
             remaining_excess -= remaining_excess / (max_items - current_item + 1)
-            flows_ascending.remove(flow)
+            flows_ascending.remove((_flow_id, flow))
 
     return
 
 
 # key function to sort flows by demand bw
-def sort_by_demand(flow):
-    return flow.get_demand_bw()
+def sort_by_demand(flow_pair):
+    return flow_pair[1].get_demand_bw()
 
 
 # TODO: change this to have an allocation cap but not allocate beyond the cap
