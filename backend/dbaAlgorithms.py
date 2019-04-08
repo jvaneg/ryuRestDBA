@@ -162,6 +162,7 @@ def allocate_hybrid(flow_list, excess_bandwidth, max_fraction):
                 active_flows.remove(flow)
             else:
                 flow.allocated_bw += flow_excess_share + flow_maximum
+                remaining_excess += flow_maximum
                 remaining_excess -= flow_excess_share
                 print("{} - path 4  fx {} fm {} xs {} rx {}".format(flow.get_id, flow_extra, flow_maximum, flow_excess_share, remaining_excess))
 
