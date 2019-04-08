@@ -79,7 +79,7 @@ class Flow:
         else:
             return 0
 
-    # deprecated, use allocate_bw instead
+    # deprecated, use allocate_bw instead (usually)
     def allocate(self, allocated_bandwidth, excess_share):
         self.allocated_bw = allocated_bandwidth
         self.excess_share = excess_share

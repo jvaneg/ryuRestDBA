@@ -29,6 +29,8 @@ def main(args):
         print("Error: Invalid algorithm in config file")
         exit(-1)
 
+    hybrid_fraction = config["hybrid_fraction"]
+
     # setup switches
     switch_list = switchTools.setup_switches(Path(args.config_file))
     tier1_switch = switch_list[TIER1_SWITCH]
@@ -76,7 +78,7 @@ def main(args):
             elif(algorithm == ALG_PROP):
                 dbaAlgorithms.allocate_proportional(t1_flow_list, excess_bandwidth)
             elif(algorithm == ALG_HYBR):
-                dbaAlgorithms.allocate_hybrid(t1_flow_list, excess_bandwidth, HYBRID_FRACTION)
+                dbaAlgorithms.allocate_hybrid(t1_flow_list, excess_bandwidth, hybrid_fraction)
 
             # install allocated bandwidth changes on t2 switch meters
             switchTools.update_meters(tier2_switch[SWITCH_INDEX], tier2_switch[FLOWS_INDEX])
@@ -232,9 +234,6 @@ ALG_NONE = 0
 ALG_EGAL = 1
 ALG_PROP = 2
 ALG_HYBR = 3
-
-# Alg options
-HYBRID_FRACTION = 0.10
 
 # Triplet indexes
 SWITCH_INDEX = 0
