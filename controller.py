@@ -118,7 +118,7 @@ def main(args):
                 flow_high_display = "S3 - High Priority:\t"
                 high_csv_string = ""
                 flow_high_display += "{} - {}\t  {} - {}\t  ".format(3, t3_flow_list[3].get_demand_bw(),
-                                                                     4, t3_flow_list[3].get_demand_bw())
+                                                                     4, t3_flow_list[4].get_demand_bw())
                 high_csv_string += "{},{},".format(t3_flow_list[3].get_demand_bw(),
                                                    t3_flow_list[4].get_demand_bw())
 
