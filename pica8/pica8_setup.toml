@@ -8,7 +8,7 @@ link_capacity = 600
 # 1 - egalitarian fairness
 # 2 - proportial fairness
 # 3 - hybrid proportional fairness
-algorithm = 2
+algorithm = 1
 
 # if using alg 3, fraction allowed up to
 hybrid_fraction = 0.10
