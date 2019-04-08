@@ -74,8 +74,7 @@ def main(args):
             if(algorithm == ALG_EGAL):
                 dbaAlgorithms.allocate_egalitarian(t1_flow_list, excess_bandwidth)
             elif(algorithm == ALG_PROP):
-                # dbaAlgorithms.allocate_proportional(t1_flow_list, excess_bandwidth)
-                dbaAlgorithms.new_allocate_egalitarian(t1_flow_list, excess_bandwidth)
+                dbaAlgorithms.new_allocate_proportional(t1_flow_list, excess_bandwidth)
             elif(algorithm == ALG_HYBR):
                 dbaAlgorithms.allocate_hybrid(t1_flow_list, excess_bandwidth, HYBRID_FRACTION)
 
@@ -90,6 +89,7 @@ def main(args):
                 for flow_id, flow in t3_flow_list.items():
                     flow.update_demand_bw(t3_flow_bytes[flow_id], t3_timestamp)
 
+                # TODO: remove this it doesnt work right anyways
                 # poll t2 switch for flow data
                 t2_flow_bytes, t2_timestamp = switchTools.get_flow_bytes(tier2_switch[SWITCH_INDEX])
                 # calculate demand bw for t2 flows (min, over min)
