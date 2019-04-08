@@ -79,9 +79,15 @@ class Flow:
         else:
             return 0
 
+    # deprecated, use allocate_bw instead
     def allocate(self, allocated_bandwidth, excess_share):
         self.allocated_bw = allocated_bandwidth
         self.excess_share = excess_share
+        if(self.linked_flow is not None):
+            self.linked_flow.set_meter_rate(self.allocated_bw - self.get_minimum_rate())
+
+    def allocate_bw(self, allocated_bandwidth):
+        self.allocated_bandwidth = allocated_bandwidth
         if(self.linked_flow is not None):
             self.linked_flow.set_meter_rate(self.allocated_bw - self.get_minimum_rate())
 

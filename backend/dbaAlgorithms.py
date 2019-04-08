@@ -1,3 +1,6 @@
+from copy import copy
+
+
 # TODO: change this to have an allocation cap but not allocate beyond the cap
 def allocate_egalitarian(flow_list, excess_bandwidth):
 
@@ -26,6 +29,41 @@ def allocate_egalitarian(flow_list, excess_bandwidth):
         flow.allocate(allocated_bandwidth, excess_share)
 
     return
+
+
+# probably dont need the list copy iteration stuff because it should only take one
+def new_allocate_egalitarian(all_flow_list, link_capacity):
+    # returns a shallow copy list of the flows sorted by demand bw in ascending order
+    flows_ascending = sorted(all_flow_list.items(), key=sort_by_demand)
+    remaining_excess = link_capacity
+
+    flows_copy = copy(flows_ascending)  # copy to iterate while removing elements
+    max_items = len(flows_ascending)
+    current_item = 1
+    for _flow_id, flow in flows_copy:
+        flow_demand = flow.get_demand_bw()
+        flow_min = flow.get_minimum_rate()
+        flow_extra = flow_demand - flow_min
+
+        if(flow_demand <= flow_min):
+            flow.allocate_bw(flow_demand)
+            remaining_excess -= flow_demand
+            flows_ascending.remove(flow)
+        elif((flow_extra * (max_items - current_item + 1)) <= remaining_excess):
+            flow.allocate_bw(flow_demand)
+            remaining_excess -= flow_demand
+            flows_ascending.remove(flow)
+        else:
+            flow.allocate_bw(remaining_excess / (max_items - current_item + 1))
+            remaining_excess -= remaining_excess / (max_items - current_item + 1)
+            flows_ascending.remove(flow)
+
+    return
+
+
+# key function to sort flows by demand bw
+def sort_by_demand(flow):
+    return flow.get_demand_bw()
 
 
 # TODO: change this to have an allocation cap but not allocate beyond the cap
