@@ -130,7 +130,6 @@ def allocate_hybrid(flow_list, excess_bandwidth, max_fraction):
     active_flows.sort(key=sort_by_demand)
 
     remaining_excess = excess_bandwidth - total_flow_maximum
-    print("remaining excess - {}".format(remaining_excess))
     while(active_flows and (int(remaining_excess) > 0)):
         active_flows_copy = copy(active_flows)  # create a shallow copy to iterate while removing
 
