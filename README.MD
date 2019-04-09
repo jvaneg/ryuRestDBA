@@ -17,6 +17,7 @@ Note: Requires Aaron's custom ovs on mininet (TODO: get install intructions from
 
 ## Start config in mininet
 ```
+cd ryuRestDBA
 sudo mn --custom ./mininet/3switchtest.py --controller=remote --topo testbed
 ```
 
@@ -29,10 +30,18 @@ ryu-manager --verbose ryu.app.simple_switch_13 ryu.app.ofctl_rest
 ## Start controller application
 In another terminal:
 ```
-sudo pipenv run python ./controller.py [controller]
+cd ryuRestDBA
+sudo pipenv run python ./controller.py [controller config] [-l [log file]]
 ```
 Requires sudo for queue installation and cleanup.
 
+For min guarantee version run:
+In another terminal:
+```
+cd ryuRestDBA
+sudo pipenv run python ./controller.py ./mininet_min_guar/mn_min_guar_setup.toml [-l [log file]]
+```
+Requires sudo for queue installation and cleanup.
 ## Clean up mininet
 ```
 sudo mn --clean
@@ -53,7 +62,7 @@ iperf -s -u -p 5503
 ## Start iperf clients
 On host 1 and host 2 terminals:
 ```
-iperf -c 10.0.0.3 -u -b 400M -t 30 -p 5503
+iperf -c 10.0.0.3 -u -b 200M -t 30 -p 5503
 ```
 Note: Do not try to use a demand higher than the network can support or you will drop many packets.
 
