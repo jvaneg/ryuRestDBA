@@ -349,7 +349,7 @@ dpid = 3
     # bash script to install queues
     [switches.queues]
     queue_script = "./mininet_min_guar/mn_s3_queues.sh"
-    clear_queue_script = "./mininet_min_guar/mn_s3_clear_queues.sh"
+    clear_queue_script = "./mininet_min_guar/mn_dummy_clear_queues.sh"
 
 # --- tier 3 switch meters ---
 
