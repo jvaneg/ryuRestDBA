@@ -8,7 +8,7 @@ link_capacity = 600
 # 1 - egalitarian fairness
 # 2 - proportial fairness
 # 3 - hybrid proportional fairness
-algorithm = 0
+algorithm = 3
 
 # if using alg 3, fraction allowed up to
 hybrid_fraction = 0.10
@@ -21,8 +21,8 @@ dpid = 1
 
     # bash script to install queues
     [switches.queues]
-    queue_script = "./pica8_min_guar/pica8_dummy_queues.sh"
-    clear_queue_script = "./pica8_min_guar/pica8_dummy_clear_queues.sh"
+    queue_script = "./pica8/pica8_dummy_queues.sh"
+    clear_queue_script = "./pica8/pica8_dummy_clear_queues.sh"
 
 # --- main switch meters ---
 
@@ -154,12 +154,11 @@ dpid = 2
 
     # bash script to install queues
     [switches.queues]
-    queue_script = "./pica8_min_guar/pica8_s2_queues.sh"
-    clear_queue_script = "./pica8_min_guar/pica8_s2_clear_queues.sh"
+    queue_script = "./pica8/pica8_dummy_queues.sh"
+    clear_queue_script = "./pica8/pica8_dummy_clear_queues.sh"
 
 # --- tier 2 switch meters (for remarked traffic) ---
 
-    # not used in min guar
     # meter 1
     [[switches.meters]]
     dpid = 2
@@ -258,10 +257,6 @@ dpid = 2
         ipv4_dst = "192.168.2.3"
 
         [[switches.flows.actions]]
-        type = "SET_QUEUE"
-        queue_id = 1
-
-        [[switches.flows.actions]]
         type = "OUTPUT"
         port = 2
 
@@ -278,10 +273,6 @@ dpid = 2
         eth_type = 2048
         ipv4_src = "192.168.2.2"
         ipv4_dst = "192.168.2.3"
-
-        [[switches.flows.actions]]
-        type = "SET_QUEUE"
-        queue_id = 1
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -303,14 +294,9 @@ dpid = 2
         ipv4_dst = "192.168.2.3"
         ip_dscp = 10
 
-        # dont meter these
-        # [[switches.flows.actions]]
-        # type = "METER"
-        # meter_id = 1
-
         [[switches.flows.actions]]
-        type = "SET_QUEUE"
-        queue_id = 0
+        type = "METER"
+        meter_id = 1
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -331,14 +317,9 @@ dpid = 2
         ipv4_dst = "192.168.2.3"
         ip_dscp = 10
 
-        # dont meter in min guar
-        # [[switches.flows.actions]]
-        # type = "METER"
-        # meter_id = 2
-
         [[switches.flows.actions]]
-        type = "SET_QUEUE"
-        queue_id = 0
+        type = "METER"
+        meter_id = 2
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -354,8 +335,8 @@ dpid = 2
 
     # bash script to install queues
     [switches.queues]
-    queue_script = "./pica8_min_guar/pica8_s3_queues.sh"
-    clear_queue_script = "./pica8_min_guar/pica8_dummy_clear_queues.sh"
+    queue_script = "./pica8/pica8_s3_queues.sh"
+    clear_queue_script = "./pica8/pica8_s3_clear_queues.sh"
 
 # --- tier 3 switch meters ---
 
@@ -390,10 +371,6 @@ dpid = 2
 
     # --- main flows (controller will calculate the bandwidth for these) ---
 
-    # all these queues will go to the same place
-    # i dont want to remove the extras because it hurts my brain
-    # only high and medium priority queues should be hit
-
     # --- high priority flows (no DSCP) ---
     # H1H3 flow - high priority
     [[switches.flows]]
@@ -412,7 +389,7 @@ dpid = 2
 
         [[switches.flows.actions]]
         type = "SET_QUEUE"
-        queue_id = 0
+        queue_id = 2
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -435,7 +412,7 @@ dpid = 2
 
         [[switches.flows.actions]]
         type = "SET_QUEUE"
-        queue_id = 0
+        queue_id = 2
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -460,7 +437,7 @@ dpid = 2
 
         [[switches.flows.actions]]
         type = "SET_QUEUE"
-        queue_id = 0
+        queue_id = 1
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -484,7 +461,7 @@ dpid = 2
 
         [[switches.flows.actions]]
         type = "SET_QUEUE"
-        queue_id = 0
+        queue_id = 1
 
         [[switches.flows.actions]]
         type = "OUTPUT"
@@ -508,17 +485,17 @@ dpid = 2
         in_port = 4
 
         # Enable this action for implicit drop
-        # [[switches.flows.actions]]
-        # type = "CLEAR_ACTIONS"
+        [[switches.flows.actions]]
+        type = "CLEAR_ACTIONS"
 
         # Enable these actions for overflow support
-        [[switches.flows.actions]]
-        type = "SET_QUEUE"
-        queue_id = 0
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 0
 
-        [[switches.flows.actions]]
-        type = "OUTPUT"
-        port = 3
+        # [[switches.flows.actions]]
+        # type = "OUTPUT"
+        # port = 3
 
     # H2H3 flow - low priority
     [[switches.flows]]
@@ -537,14 +514,14 @@ dpid = 2
         in_port = 4
 
         # Enable this action for implicit drop
-        # [[switches.flows.actions]]
-        # type = "CLEAR_ACTIONS"
+        [[switches.flows.actions]]
+        type = "CLEAR_ACTIONS"
 
         # Enable these actions for overflow support
-        [[switches.flows.actions]]
-        type = "SET_QUEUE"
-        queue_id = 0
+        # [[switches.flows.actions]]
+        # type = "SET_QUEUE"
+        # queue_id = 0
 
-        [[switches.flows.actions]]
-        type = "OUTPUT"
-        port = 3
+        # [[switches.flows.actions]]
+        # type = "OUTPUT"
+        # port = 3
