@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 import csv
+import statistics
 
 import plotly.graph_objs as go
 import plotly.io as pio
@@ -23,8 +24,8 @@ def main(args):
         "excess": [],
         "demand_h1h3": [],
         "demand_h2h3": [],
-        "allocation_h1h3": [],
-        "allocation_h2h3": [],
+        "alloc_h1h3": [],
+        "alloc_h2h3": [],
         "high_h1h3": [],
         "high_h2h3": [],
         "med_h1h3": [],
@@ -48,8 +49,8 @@ def main(args):
             csv_data["demand_h1h3"].append(float(row[1]))
             csv_data["demand_h2h3"].append(float(row[2]))
 
-            csv_data["allocation_h1h3"].append(float(row[3]))
-            csv_data["allocation_h2h3"].append(float(row[4]))
+            csv_data["alloc_h1h3"].append(float(row[3]))
+            csv_data["alloc_h2h3"].append(float(row[4]))
 
             csv_data["high_h1h3"].append(float(row[5]))
             csv_data["high_h2h3"].append(float(row[6]))
@@ -94,6 +95,13 @@ def main(args):
 
     pio.write_image(fig, output_file, width=FIG_WIDTH, height=FIG_HEIGHT, scale=1)
     print("Graph written to {}".format(output_file))
+    if(args.stats is not None):
+        print("--- STATS ---")
+        print("- Median -")
+        for name, col in csv_data.items():
+            col_median = statistics.median(col)
+            print("{}: \t{}".format(name, col_median))
+        print("-------------")
 
 
 # full detailed graph
@@ -127,7 +135,7 @@ def full_graph(csv_data):
     )
     h1_alloc_trace = go.Scatter(
         x=csv_data["x_axis"],
-        y=csv_data["allocation_h1h3"],
+        y=csv_data["alloc_h1h3"],
         name="Allocation H1->H3",
         line=dict(
             color=D_ORANGE,
@@ -156,7 +164,7 @@ def full_graph(csv_data):
     )
     h2_alloc_trace = go.Scatter(
         x=csv_data["x_axis"],
-        y=csv_data["allocation_h2h3"],
+        y=csv_data["alloc_h2h3"],
         name="Allocation H2->H3",
         line=dict(
             color=D_BLUE,
@@ -200,7 +208,7 @@ def h1_graph(csv_data):
     )
     alloc_trace = go.Scatter(
         x=csv_data["x_axis"],
-        y=csv_data["allocation_h1h3"],
+        y=csv_data["alloc_h1h3"],
         name="Allocation H1->H3",
         line=dict(
             color=D_ORANGE,
@@ -281,7 +289,7 @@ def h2_graph(csv_data):
     )
     alloc_trace = go.Scatter(
         x=csv_data["x_axis"],
-        y=csv_data["allocation_h2h3"],
+        y=csv_data["alloc_h2h3"],
         name="Allocation H2->H3",
         line=dict(
             color=D_ORANGE,
@@ -387,5 +395,6 @@ if __name__ == "__main__":
                         default="both",
                         choices=["h1", "h2", "both"],
                         help="type of graph")
+    parser.add_argument("-s", "--stats", action="store_true", help="outputs the median stats for each col")
     args = parser.parse_args()
     main(args)
