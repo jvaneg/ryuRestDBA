@@ -95,4 +95,5 @@ echo "and at ${LOCAL_RESULTS_FOLDER}${FILE_NAME}.csv"
 
 cat ${LOCAL_RESULTS_FOLDER}${FILE_NAME}_results.log
 
-pipenv run python ./tools/plotTool.py ${LOCAL_RESULTS_FOLDER}${FILE_NAME}.csv -s -ng
+pipenv run python ./tools/plotTool.py ${LOCAL_RESULTS_FOLDER}${FILE_NAME}.csv -s -ng >> ${LOCAL_RESULTS_FOLDER}${FILE_NAME}_all_csv_details.log
+cat ${LOCAL_RESULTS_FOLDER}${FILE_NAME}_all_csv_details.log
