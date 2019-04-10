@@ -1,13 +1,13 @@
 
 #!/bin/sh
 
-# No Guarantee, TCP, One Dominates
+# Minimum Guarantee, TCP, Conflict
 
 # TEST SETUP
 # H1 min: 100 Mbps
-# H1 demand: 200 Mbps
+# H1 demand: 400 Mbps
 # H2 min: 200 Mbps
-# H2 demand: 600 Mbps
+# H2 demand: 400 Mbps
 # Link capacity: 600Mbps
 # Host1, Host2 -> Host3
 # TCP
@@ -16,14 +16,14 @@
 # assumes ryurest is currently running on the switch
 
 # Demands (Mbps)
-H1_DEMAND=200
-H2_DEMAND=600
+H1_DEMAND=400
+H2_DEMAND=400
 
 # output file's name
-FILE_NAME=ng_od_tcp
+FILE_NAME=dbae_c_tcp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
-CTRL_SETUP_FILE=./pica8_no_guar/pica8_no_guar_setup.toml
-LOCAL_RESULTS_FOLDER=./results/pica8_no_guar/od/tcp/
+CTRL_SETUP_FILE=./pica8/pica8_dba_egal_setup.toml
+LOCAL_RESULTS_FOLDER=./results/pica8_dba_egal/c/tcp/
 UDP_TOGGLE=""
 
 # Internal network host IPs

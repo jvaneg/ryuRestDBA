@@ -1,7 +1,7 @@
 
 #!/bin/sh
 
-# No Guarantee, TCP, One Dominates
+# Minimum Guarantee, TCP, One Dominates
 
 # TEST SETUP
 # H1 min: 100 Mbps
@@ -20,10 +20,10 @@ H1_DEMAND=200
 H2_DEMAND=600
 
 # output file's name
-FILE_NAME=ng_od_tcp
+FILE_NAME=mg_od_tcp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
-CTRL_SETUP_FILE=./pica8_no_guar/pica8_no_guar_setup.toml
-LOCAL_RESULTS_FOLDER=./results/pica8_no_guar/od/tcp/
+CTRL_SETUP_FILE=./pica8_min_guar/pica8_min_guar_setup.toml
+LOCAL_RESULTS_FOLDER=./results/pica8_min_guar/od/tcp/
 UDP_TOGGLE=""
 
 # Internal network host IPs

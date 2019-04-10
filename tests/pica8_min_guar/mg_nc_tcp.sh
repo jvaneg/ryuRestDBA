@@ -1,13 +1,13 @@
 
 #!/bin/sh
 
-# No Guarantee, TCP, One Dominates
+# Minimum Guarantee, TCP, No Conflict
 
 # TEST SETUP
 # H1 min: 100 Mbps
 # H1 demand: 200 Mbps
 # H2 min: 200 Mbps
-# H2 demand: 600 Mbps
+# H2 demand: 300 Mbps
 # Link capacity: 600Mbps
 # Host1, Host2 -> Host3
 # TCP
@@ -17,13 +17,13 @@
 
 # Demands (Mbps)
 H1_DEMAND=200
-H2_DEMAND=600
+H2_DEMAND=300
 
 # output file's name
-FILE_NAME=ng_od_tcp
+FILE_NAME=mg_nc_tcp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
-CTRL_SETUP_FILE=./pica8_no_guar/pica8_no_guar_setup.toml
-LOCAL_RESULTS_FOLDER=./results/pica8_no_guar/od/tcp/
+CTRL_SETUP_FILE=./pica8_min_guar/pica8_min_guar_setup.toml
+LOCAL_RESULTS_FOLDER=./results/pica8_min_guar/nc/tcp/
 UDP_TOGGLE=""
 
 # Internal network host IPs

@@ -20,10 +20,10 @@ H1_DEMAND=200
 H2_DEMAND=600
 
 # output file's name
-FILE_NAME=ng_c_udp
+FILE_NAME=ng_od_udp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
 CTRL_SETUP_FILE=./pica8_no_guar/pica8_no_guar_setup.toml
-LOCAL_RESULTS_FOLDER=./results/pica8_no_guar/c/udp/
+LOCAL_RESULTS_FOLDER=./results/pica8_no_guar/od/udp/
 UDP_TOGGLE="-u"
 
 # Internal network host IPs
