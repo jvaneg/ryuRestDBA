@@ -88,14 +88,16 @@ def main(args):
 
     fig = dict(data=data, layout=layout)
 
-    if(args.output_name is None):
-        output_file = "{}_{}.png".format(Path(args.target_csv).stem, args.type)
-    else:
-        output_file = args.output_name
+    if(not args.nograph):
+        if(args.output_name is None):
+            output_file = "{}_{}.png".format(Path(args.target_csv).stem, args.type)
+        else:
+            output_file = args.output_name
 
-    pio.write_image(fig, output_file, width=FIG_WIDTH, height=FIG_HEIGHT, scale=1)
-    print("Graph written to {}".format(output_file))
-    if(args.stats is not None):
+        pio.write_image(fig, output_file, width=FIG_WIDTH, height=FIG_HEIGHT, scale=1)
+        print("Graph written to {}".format(output_file))
+
+    if(args.stats):
         print("--- STATS ---")
         print("- Median -")
         for name, col in csv_data.items():
@@ -396,5 +398,6 @@ if __name__ == "__main__":
                         choices=["h1", "h2", "both"],
                         help="type of graph")
     parser.add_argument("-s", "--stats", action="store_true", help="outputs the median stats for each col")
+    parser.add_argument("-ng", "--nograph", action="store_true", help="outputs no graph")
     args = parser.parse_args()
     main(args)
