@@ -1,30 +1,30 @@
 
 #!/bin/sh
 
-# No Guarantee, UDP, No Conflict
+# No Guarantee, TCP, Conflict
 
 # TEST SETUP
 # H1 min: 100 Mbps
-# H1 demand: 200 Mbps
+# H1 demand: 400 Mbps
 # H2 min: 200 Mbps
-# H2 demand: 300 Mbps
+# H2 demand: 400 Mbps
 # Link capacity: 600Mbps
 # Host1, Host2 -> Host3
-# UDP
+# TCP
 
 # requires sshpass to be installed on the machine running the script
 # assumes ryurest is currently running on the switch
 
 # Demands (Mbps)
-H1_DEMAND=200
-H2_DEMAND=300
+H1_DEMAND=400
+H2_DEMAND=400
 
 # output file's name
-FILE_NAME=ng_nc_udp
+FILE_NAME=ng_c_tcp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
 CTRL_SETUP_FILE=./pica8_no_guar/pica8_no_guar_setup.toml
-LOCAL_RESULTS_FOLDER=./results/pica8_no_guar/nc/udp/
-UDP_TOGGLE="-u"
+LOCAL_RESULTS_FOLDER=./results/pica8_no_guar/c/tcp/
+UDP_TOGGLE=""
 
 # Internal network host IPs
 H1_IP=192.168.2.1
