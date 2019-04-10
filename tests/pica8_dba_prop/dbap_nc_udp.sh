@@ -1,7 +1,7 @@
 
 #!/bin/sh
 
-# Minimum Guarantee, UDP, No Conflict
+# DBA Proportional, UDP, No Conflict
 
 # TEST SETUP
 # H1 min: 100 Mbps
@@ -22,7 +22,7 @@ H2_DEMAND=300
 # output file's name
 FILE_NAME=dbap_nc_udp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
-CTRL_SETUP_FILE=./pica8/pica8_dba_prop_setup.toml
+CTRL_SETUP_FILE=./pica8/pica8_prop_setup.toml
 LOCAL_RESULTS_FOLDER=./results/pica8_dba_prop/nc/udp/
 UDP_TOGGLE="-u"
 

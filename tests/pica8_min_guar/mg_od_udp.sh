@@ -16,8 +16,8 @@
 # assumes ryurest is currently running on the switch
 
 # Demands (Mbps)
-H1_DEMAND=200
-H2_DEMAND=600
+H1_DEMAND=600
+H2_DEMAND=200
 
 # output file's name
 FILE_NAME=mg_od_udp

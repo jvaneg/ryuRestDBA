@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Minimum Guarantee, UDP, Conflict
+# DBA Egalitarian, UDP, Conflict
 
 # TEST SETUP
 # H1 min: 100 Mbps

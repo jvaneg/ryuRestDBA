@@ -1,7 +1,7 @@
 
 #!/bin/sh
 
-# Minimum Guarantee, TCP, No Conflict
+# DBA Hybrid - Fraction 0.10, TCP, No Conflict
 
 # TEST SETUP
 # H1 min: 100 Mbps

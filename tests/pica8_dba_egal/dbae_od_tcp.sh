@@ -1,7 +1,7 @@
 
 #!/bin/sh
 
-# Minimum Guarantee, TCP, One Dominates
+# DBA Egalitarian, TCP, One Dominates
 
 # TEST SETUP
 # H1 min: 100 Mbps
@@ -16,8 +16,8 @@
 # assumes ryurest is currently running on the switch
 
 # Demands (Mbps)
-H1_DEMAND=200
-H2_DEMAND=600
+H1_DEMAND=600
+H2_DEMAND=200
 
 # output file's name
 FILE_NAME=dbae_od_tcp

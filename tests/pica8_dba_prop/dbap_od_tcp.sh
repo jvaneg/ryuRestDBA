@@ -1,7 +1,7 @@
 
 #!/bin/sh
 
-# Minimum Guarantee, TCP, One Dominates
+# DBA Proportional, TCP, One Dominates
 
 # TEST SETUP
 # H1 min: 100 Mbps
@@ -16,13 +16,13 @@
 # assumes ryurest is currently running on the switch
 
 # Demands (Mbps)
-H1_DEMAND=200
-H2_DEMAND=600
+H1_DEMAND=600
+H2_DEMAND=200
 
 # output file's name
 FILE_NAME=dbap_od_tcp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
-CTRL_SETUP_FILE=./pica8/pica8_dba_prop_setup.toml
+CTRL_SETUP_FILE=./pica8/pica8_prop_setup.toml
 LOCAL_RESULTS_FOLDER=./results/pica8_dba_prop/od/tcp/
 UDP_TOGGLE=""
 
