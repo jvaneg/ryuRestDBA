@@ -21,7 +21,7 @@ H2_DEMAND=400
 # output file's name
 FILE_NAME=dbah_c_udp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
-CTRL_SETUP_FILE=./pica8/pica8_dba_hybr_setup.toml
+CTRL_SETUP_FILE=./pica8/pica8_hybr_setup.toml
 LOCAL_RESULTS_FOLDER=./results/pica8_dba_hybr/c/udp/
 UDP_TOGGLE="-u"
 

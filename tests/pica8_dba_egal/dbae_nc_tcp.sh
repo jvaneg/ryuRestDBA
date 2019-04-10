@@ -22,7 +22,7 @@ H2_DEMAND=300
 # output file's name
 FILE_NAME=dbae_nc_tcp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
-CTRL_SETUP_FILE=./pica8/pica8_dba_egal_setup.toml
+CTRL_SETUP_FILE=./pica8/pica8_egal_setup.toml
 LOCAL_RESULTS_FOLDER=./results/pica8_dba_egal/nc/tcp/
 UDP_TOGGLE=""
 

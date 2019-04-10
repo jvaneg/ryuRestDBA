@@ -22,7 +22,7 @@ H2_DEMAND=200
 # output file's name
 FILE_NAME=dbah_od_tcp
 RYURESTDBA_INSTALL=/home/host4/dbaController/ryuRestDBA/
-CTRL_SETUP_FILE=./pica8/pica8_dba_hybr_setup.toml
+CTRL_SETUP_FILE=./pica8/pica8_hybr_setup.toml
 LOCAL_RESULTS_FOLDER=./results/pica8_dba_hybr/od/tcp/
 UDP_TOGGLE=""
 
