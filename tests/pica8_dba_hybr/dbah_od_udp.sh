@@ -5,9 +5,9 @@
 
 # TEST SETUP
 # H1 min: 100 Mbps
-# H1 demand: 600 Mbps
+# H1 demand: 500 Mbps
 # H2 min: 200 Mbps
-# H2 demand: 200 Mbps
+# H2 demand: 300 Mbps
 # Link capacity: 600Mbps
 # Host1, Host2 -> Host3
 # UDP
@@ -16,8 +16,8 @@
 # assumes ryurest is currently running on the switch
 
 # Demands (Mbps)
-H1_DEMAND=600
-H2_DEMAND=200
+H1_DEMAND=500
+H2_DEMAND=300
 
 # output file's name
 FILE_NAME=dbah_od_udp
