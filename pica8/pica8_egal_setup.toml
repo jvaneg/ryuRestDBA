@@ -36,7 +36,7 @@ dpid = 1
         type = "DSCP_REMARK"
 	    prec_level = 10
         rate = 100000
-        burst_size = 1000
+        burst_size = 5000
 
     # meter 2
     [[switches.meters]]
@@ -48,7 +48,7 @@ dpid = 1
         type = "DSCP_REMARK"
 	    prec_level = 10
         rate = 200000
-        burst_size = 1000
+        burst_size = 5000
 
 
 # --- main switch flows ---
@@ -169,7 +169,7 @@ dpid = 2
         type = "DSCP_REMARK"
 	    prec_level = 12
         rate = 1000
-        burst_size = 1000
+        burst_size = 5000
 
     # meter 2
     [[switches.meters]]
@@ -181,7 +181,7 @@ dpid = 2
         type = "DSCP_REMARK"
 	    prec_level = 12
         rate = 1000
-        burst_size = 1000
+        burst_size = 5000
 
 
 # --- tier 2 switch flows ---
