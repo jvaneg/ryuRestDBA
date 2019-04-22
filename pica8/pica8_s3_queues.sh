@@ -3,6 +3,7 @@
 #requires sshpass to be installed on the machine running the script
 
 # adds the qos/queues to the pica8 switch
+# Queues in strict priority (PRONTO_STRICT)
 # q2 highest priority
 # q0 lowest priority
 PICA8SETUP="source /etc/profile;\

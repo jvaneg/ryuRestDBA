@@ -1,3 +1,9 @@
+# TEST SETUP
+# H1 min: 100 Mbps
+# H2 min: 200 Mbps
+# Link capacity: 600Mbps
+# Host1, Host2 -> Host3
+
 # Basic config stuff
 [config]
 # Max rate in Mbps
@@ -13,20 +19,31 @@ algorithm = 1
 # if using alg 3, fraction allowed up to
 hybrid_fraction = 0.10
 
-# --- Main switch ---
+# --- Main switch (t1 switch) ---
+# This switch does the initial metering to separate below minimum rate
+# and above minimum rate traffic
 [[switches]]
+# DPID of the switch (can find this with the getDPIDs.py script)
 dpid = 1
 
 # --- main switch queues ---
 
     # bash script to install queues
+    # These scripts are both dummies because no queues are installed on the t1 switch
+    # They only exist because I didn't want to add controller logic for no queue scripts
     [switches.queues]
     queue_script = "./pica8/pica8_dummy_queues.sh"
     clear_queue_script = "./pica8/pica8_dummy_clear_queues.sh"
 
 # --- main switch meters ---
 
-    # meter 1
+    # --- METER 1 ---
+    # Meter id: 1
+    # Type: DSCP Remark
+    #       Remarks traffic over max rate to prec_level 10 (tos 0x28)
+    # Max Rate: 100 Mbps
+    #       This is H1's min rate
+    # Burst size: 5 Mbps
     [[switches.meters]]
     dpid = 1
     flags = ["KBPS"]
@@ -38,7 +55,13 @@ dpid = 1
         rate = 100000
         burst_size = 5000
 
-    # meter 2
+    # --- METER 2 ---
+    # Meter id: 2
+    # Type: DSCP Remark
+    #       Remarks traffic over max rate to prec_level 10 (tos 0x28)
+    # Max Rate: 200 Mbps
+    #       This is H2's min rate
+    # Burst size: 5 Mbps
     [[switches.meters]]
     dpid = 1
     flags = ["KBPS"]
@@ -55,7 +78,17 @@ dpid = 1
 
     # --- static flows (installed and then left untouched by the controller) ---
 
-    # ARP flow
+    # --- ARP flow ---
+    # Floods all ports with ARP messages, like a regular L2 switch
+    # Flow Table ID: 0
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       Eth_type: 2054
+    #           Eth type 2054 is ARP messages
+    # Actions:
+    #       Output: Flood
+    #           Will output these packets out all ports
     [[switches.static_flows]]
     dpid = 1
     table_id = 0
@@ -69,7 +102,21 @@ dpid = 1
         type = "OUTPUT"
         port = "FLOOD"
 
-    # H3H1 flow
+    # --- H3 -> H1 Flow ---
+    # Sends all packets from H3 going to H1 out port 1
+    # Flow Table ID: 0
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.3
+    #           Source IP is H3
+    #       ipv4_dst: 192.168.2.1
+    #           Destination IP is H1
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Output: 1
+    #           Will output these packets to port 1
     [[switches.static_flows]]
     dpid = 1
     table_id = 0
@@ -85,7 +132,21 @@ dpid = 1
         type = "OUTPUT"
         port = 1
 
-    # H3H2 flow
+    # --- H3 -> H2 Flow ---
+    # Sends all packets from H3 going to H2 out port 2
+    # Flow Table ID: 0
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.3
+    #           Source IP is H3
+    #       ipv4_dst: 192.168.2.2
+    #           Destination IP is H2
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Output: 2
+    #           Will output these packets to port 2
     [[switches.static_flows]]
     dpid = 1
     table_id = 0
@@ -103,7 +164,25 @@ dpid = 1
 
     # --- main flows (controller will calculate the bandwidth for these) ---
 
-    # H1H3 flow
+    # --- H1 -> H3 Flow ---
+    # Sends all packets from H1 going to H3 through meter1, and out port 3
+    # Flow Table ID: 0
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Cookie: 1
+    #       Unique identifier for this flow for polling purposes
+    # Matches on:
+    #       ipv4_src: 192.168.2.1
+    #           Source IP is H1
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Meter: 1
+    #           Applies meter1 to all traffic through this flow
+    #       Output: 3
+    #           Will output these packets to port 3
     [[switches.flows]]
     dpid = 1
     cookie = 1
@@ -124,7 +203,25 @@ dpid = 1
         type = "OUTPUT"
         port = 3
 
-    # H2H3 flow
+    # --- H2 -> H3 Flow ---
+    # Sends all packets from H2 going to H3 through meter2, and out port 3
+    # Flow Table ID: 0
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Cookie: 2
+    #       Unique identifier for this flow for polling purposes
+    # Matches on:
+    #       ipv4_src: 192.168.2.2
+    #           Source IP is H2
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Meter: 2
+    #           Applies meter2 to all traffic through this flow
+    #       Output: 3
+    #           Will output these packets to port 3
     [[switches.flows]]
     dpid = 1
     cookie = 2
@@ -147,19 +244,32 @@ dpid = 1
 
 
 # --- tier 2 switch ---
+# This switch separates below allocated rate traffic from 
+# above allocated rate traffic.
+# Allocated rate is enforced by modifying the max rate of meters on this switch.
 [[switches]]
 dpid = 2
 
 # --- tier 2 switch queues ---
 
-    # bash script to install queues
+    # --- bash script to install queues ---
+    # No queues are created or destroyed here because this is the same physical switch
+    # as the t3 switch, and all queues are installed in that switch's setup.
+    # Queue setup and clear here are both dummy bash scripts that do nothing
+    # (I was too lazy to make special cases for no setup scripts)
     [switches.queues]
     queue_script = "./pica8/pica8_dummy_queues.sh"
     clear_queue_script = "./pica8/pica8_dummy_clear_queues.sh"
 
 # --- tier 2 switch meters (for remarked traffic) ---
 
-    # meter 1
+    # --- METER 1 ---
+    # Meter id: 1
+    # Type: DSCP Remark
+    #       Remarks traffic over max rate to prec_level 12 (tos 0x30)
+    # Max Rate: 1 Mbps
+    #       Max rate is adjusted by the controller, 1 Mbps is just a safe default
+    # Burst size: 5 Mbps
     [[switches.meters]]
     dpid = 2
     flags = ["KBPS"]
@@ -171,7 +281,13 @@ dpid = 2
         rate = 1000
         burst_size = 5000
 
-    # meter 2
+    # --- METER 2 ---
+    # Meter id: 2
+    # Type: DSCP Remark
+    #       Remarks traffic over max rate to prec_level 12 (tos 0x30)
+    # Max Rate: 1 Mbps
+    #       Max rate is adjusted by the controller, 1 Mbps is just a safe default
+    # Burst size: 5 Mbps
     [[switches.meters]]
     dpid = 2
     flags = ["KBPS"]
@@ -188,8 +304,18 @@ dpid = 2
 
     # --- static flows (installed and then left untouched by the controller) ---
 
-    # ARP flow
-    # Outputs to 1 and 3 instead of FLOOD to prevent loop
+    # --- ARP flow ---
+    # Floods all ports with ARP messages, like a regular L2 switch
+    # Flow Table ID: 0
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       Eth_type: 2054
+    #           Eth type 2054 is ARP messages
+    # Actions:
+    #       Output: 1,3
+    #           Will output these packets to ports 1 and 3
+    #           Doesn't flood to prevent loop
     [[switches.static_flows]]
     dpid = 2
     table_id = 0
@@ -207,7 +333,21 @@ dpid = 2
         type = "OUTPUT"
         port = 3
 
-    # H3H1 flow
+    # --- H3 -> H1 Flow ---
+    # Sends all packets from H3 going to H1 out port 1
+    # Flow Table ID: 0
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.3
+    #           Source IP is H3
+    #       ipv4_dst: 192.168.2.1
+    #           Destination IP is H1
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Output: 1
+    #           Will output these packets to port 1
     [[switches.static_flows]]
     dpid = 2
     table_id = 0
@@ -223,7 +363,21 @@ dpid = 2
         type = "OUTPUT"
         port = 1
 
-    # H3H2 flow
+    # --- H3 -> H2 Flow ---
+    # Sends all packets from H3 going to H2 out port 2
+    # Flow Table ID: 0
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.3
+    #           Source IP is H3
+    #       ipv4_dst: 192.168.2.2
+    #           Destination IP is H2
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Output: 2
+    #           Will output these packets to port 1
     [[switches.static_flows]]
     dpid = 2
     table_id = 0
@@ -242,7 +396,30 @@ dpid = 2
     # --- main flows (controller will calculate the bandwidth for these) ---
 
     # --- high priority flows ---
-    # H1H3 flow - high priority
+    # These are for traffic that was not remarked
+    # ie. traffic below the minimum guaranteed rate
+
+    # --- H1 -> H3 Flow, High Priority Traffic ---
+    # Sends all packets without DSCP 10 (traffic under meter max rate from t1 switch meters) 
+    # from H1 going to H3 out port 2 (the loop port)
+    # Flow Table ID: 0
+    # Cookie: 10
+    #       Random cookie since this flow never needs to be addressed other than for logging
+    # Priority: 100
+    #       Lowest priority, packets will only match here if they cannot match on any others
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.1
+    #           Source IP is H1
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Output: 2
+    #           Will output these packets to port 2
+    #           Port 2 is the entrance to the loop that goes back to this switch
     [[switches.flows]]
     dpid = 2
     cookie = 10
@@ -260,7 +437,27 @@ dpid = 2
         type = "OUTPUT"
         port = 2
 
-    # H2H3 flow - high priority
+    # --- H2 -> H3 Flow, High Priority Traffic ---
+    # Sends all packets without DSCP 10 (traffic under meter max rate from t1 switch meters) 
+    # from H2 going to H3 out port 2 (the loop port)
+    # Flow Table ID: 0
+    # Cookie: 11
+    #       Random cookie since this flow never needs to be addressed other than for logging
+    # Priority: 100
+    #       Lowest priority, packets will only match here if they cannot match on any others
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.2
+    #           Source IP is H2
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Output: 2
+    #           Will output these packets to port 2
+    #           Port 2 is the entrance to the loop that goes back to this switch
     [[switches.flows]]
     dpid = 2
     cookie = 11
@@ -279,7 +476,32 @@ dpid = 2
         port = 2
 
     # --- remarked flows (DSCP 10)---
-    # H1H3 flow - remarked
+    # Flows to capture remarked traffic from the t1 switch and meter it again
+    # to apply the allocated rate
+
+    # --- H1 -> H3 Flow, Remarked Traffic ---
+    # Sends all packets with DSCP 10 (traffic under meter max rate from t1 switch meters) 
+    # from H1 going to H3 out port 2 (the loop port)
+    # Flow Table ID: 0
+    # Cookie: 1
+    #       Unique identifier for this flow for polling purposes
+    # Priority: 200
+    #       Higher priority, packets will match here if possible before any other flows
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.1
+    #           Source IP is H1
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Meter: 1
+    #           Applies meter1 to all traffic through this flow
+    #       Output: 2
+    #           Will output these packets to port 2
+    #           Port 2 is the entrance to the loop that goes back to this switch
     [[switches.flows]]
     dpid = 2
     cookie = 1
@@ -302,7 +524,29 @@ dpid = 2
         type = "OUTPUT"
         port = 2
 
-    # H2H3 flow - remarked
+    # --- H2 -> H3 Flow, Remarked Traffic ---
+    # Sends all packets with DSCP 10 (traffic under meter max rate from t1 switch meters) 
+    # from H1 going to H3 out port 2 (the loop port)
+    # Flow Table ID: 0
+    # Cookie: 2
+    #       Unique identifier for this flow for polling purposes
+    # Priority: 200
+    #       Higher priority, packets will match here if possible before any other flows
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.2
+    #           Source IP is H2
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Meter: 1
+    #           Applies meter2 to all traffic through this flow
+    #       Output: 2
+    #           Will output these packets to port 2
+    #           Port 2 is the entrance to the loop that goes back to this switch
     [[switches.flows]]
     dpid = 2
     cookie = 2
@@ -327,20 +571,28 @@ dpid = 2
 
 
 # --- tier 3 switch ---
-# DPID 3 because this is actually the t2switch with a loop
+# DPID 2 because this is actually the t2 switch with a loop
+# This switch takes incoming traffic that was already remarked in the t1
+# and t2 switches, and puts it into the appropriate queues
 [[switches]]
 dpid = 2
 
 # --- tier 3 switch queues ---
 
     # bash script to install queues
+    # In this case both the t2 and t3 switch queues are installed here
+    # since they are the same physical switch
     [switches.queues]
     queue_script = "./pica8/pica8_s3_queues.sh"
     clear_queue_script = "./pica8/pica8_s3_clear_queues.sh"
 
 # --- tier 3 switch meters ---
 
-    # meter 3 - actually unused
+    # DUMMY METER - meter 3
+    # This meter is unused
+    # not needed because t2 and t3 share meters
+    # Here because I didn't want to add special cases for no meters
+    # to the installation script
     [[switches.meters]]
     dpid = 2
     flags = ["KBPS"]
@@ -356,7 +608,10 @@ dpid = 2
     # --- static flows (installed and then left untouched by the controller) ---
 
     # Dummy static flow flow
+    # This flow is unused
     # not needed because t2 and t3 share static flows
+    # Here because I didn't want to add special cases for no static flows
+    # to the installation script
     [[switches.static_flows]]
     dpid = 2
     table_id = 0
@@ -372,7 +627,31 @@ dpid = 2
     # --- main flows (controller will calculate the bandwidth for these) ---
 
     # --- high priority flows (no DSCP) ---
-    # H1H3 flow - high priority
+    # Packets hitting these flows were not remarked in the first or second switch
+    # Meaning they are below the minimum guaranteed rate
+
+    # --- H1 -> H3 Flow, High Priority Traffic ---
+    # Sends all packets without DSCP 10 or 12 (traffic under meter max rate from t1 switch meters) 
+    # coming from port 4 (the loop exit) from H1 going to H3 out port 3
+    # Flow Table ID: 0
+    # Cookie: 3
+    #       Unique identifier for this flow for polling purposes
+    # Priority: 300
+    #       Lowest priority, packets will only match here if they cannot match on any others
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.1
+    #           Source IP is H1
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Set Queue: 2
+    #           Sends this traffic to queue 2 (highest priority queue)
+    #       Output: 2
+    #           Will output these packets to port 3
     [[switches.flows]]
     dpid = 2
     cookie = 3
@@ -395,7 +674,28 @@ dpid = 2
         type = "OUTPUT"
         port = 3
 
-    # H2H3 flow - high priority
+    # --- H2 -> H3 Flow, High Priority Traffic ---
+    # Sends all packets without DSCP 10 or 12 (traffic under meter max rate from t1 switch meters) 
+    # coming from port 4 (the loop exit) from H2 going to H3 out port 3
+    # Flow Table ID: 0
+    # Cookie: 4
+    #       Unique identifier for this flow for polling purposes
+    # Priority: 300
+    #       Lowest priority, packets will only match here if they cannot match on any others
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.2
+    #           Source IP is H2
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Set Queue: 2
+    #           Sends this traffic to queue 2 (highest priority queue)
+    #       Output: 2
+    #           Will output these packets to port 3
     [[switches.flows]]
     dpid = 2
     cookie = 4
@@ -419,7 +719,31 @@ dpid = 2
         port = 3
 
     #--- medium priority flows (DSCP 10) ---
-    # H1H3 flow - medium priority
+    # Packets hitting these flows were remarked by the t1 switch, but not by the t2 switch
+    # Meaning they are OVER the guaranteed minimum rate but BELOW the allocated rate
+
+    # --- H1 -> H3 Flow, Medium Priority Traffic ---
+    # Sends all packets with DSCP 10 (traffic under allocated rate from t2 switch meters) 
+    # coming from port 4 (the loop exit) from H1 going to H3 out port 3
+    # Flow Table ID: 0
+    # Cookie: 5
+    #       Unique identifier for this flow for polling purposes
+    # Priority: 400
+    #       Medium priority, packets will only match here if they cannot match on the low priority flows
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.1
+    #           Source IP is H1
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Set Queue: 1
+    #           Sends this traffic to queue 1 (medium priority queue)
+    #       Output: 2
+    #           Will output these packets to port 3
     [[switches.flows]]
     dpid = 2
     cookie = 5
@@ -443,7 +767,28 @@ dpid = 2
         type = "OUTPUT"
         port = 3
 
-    # H2H3 flow - medium priority
+    # --- H2 -> H3 Flow, Medium Priority Traffic ---
+    # Sends all packets with DSCP 10 (traffic under allocated rate from t2 switch meters) 
+    # coming from port 4 (the loop exit) from H2 going to H3 out port 3
+    # Flow Table ID: 0
+    # Cookie: 6
+    #       Unique identifier for this flow for polling purposes
+    # Priority: 400
+    #       Medium priority, packets will only match here if they cannot match on the low priority flows
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.2
+    #           Source IP is H2
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Set Queue: 1
+    #           Sends this traffic to queue 1 (medium priority queue)
+    #       Output: 2
+    #           Will output these packets to port 3
     [[switches.flows]]
     dpid = 2
     cookie = 6
@@ -468,7 +813,31 @@ dpid = 2
         port = 3
 
     #--- low priority flows (DSCP 12) ---
-    # H1H3 flow - low priority
+    # Packets hitting this flow were remarked on the t2 switch
+    # Meaning they were above the allocated rate
+
+    # --- H1 -> H3 Flow, Low Priority Traffic ---
+    # Drops all packets with DSCP 12 (traffic over allocated rate from t2 switch meters) 
+    # coming from port 4 (the loop exit) from H1 going to H3
+    # Flow Table ID: 0
+    # Cookie: 7
+    #       Unique identifier for this flow for polling purposes
+    # Priority: 500
+    #       High priority, packets will match here before any other applicable flow
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.1
+    #           Source IP is H1
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Clear Actions
+    #           Drops these packets
+    #           Clear actions doesn't drop but it is good practice to use it as the action
+    #           for when you don't want any actions
     [[switches.flows]]
     dpid = 2
     cookie = 7
@@ -497,7 +866,28 @@ dpid = 2
         # type = "OUTPUT"
         # port = 3
 
-    # H2H3 flow - low priority
+    # --- H2 -> H3 Flow, Low Priority Traffic ---
+    # Drops all packets with DSCP 12 (traffic over allocated rate from t2 switch meters) 
+    # coming from port 4 (the loop exit) from H2 going to H3
+    # Flow Table ID: 0
+    # Cookie: 8
+    #       Unique identifier for this flow for polling purposes
+    # Priority: 500
+    #       High priority, packets will match here before any other applicable flow
+    # Idle timeout/hard timeout: 0
+    #       Means flows are static, won't expire
+    # Matches on:
+    #       ipv4_src: 192.168.2.2
+    #           Source IP is H2
+    #       ipv4_dst: 192.168.2.3
+    #           Destination IP is H3
+    #       Eth_type: 2048
+    #           Eth type 2048 is ipv4 packets
+    # Actions:
+    #       Clear Actions
+    #           Drops these packets
+    #           Clear actions doesn't drop but it is good practice to use it as the action
+    #           for when you don't want any actions
     [[switches.flows]]
     dpid = 2
     cookie = 8
