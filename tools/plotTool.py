@@ -379,13 +379,13 @@ D_PURPLE = "#911EB4"
 BLACK = "#000000"
 
 # line sizes
-ONE_LINE_SIZE = 5
-TWO_LINE_SIZE = 5
-MIN_RATE_LINE_SIZE = 3
+ONE_LINE_SIZE = 3
+TWO_LINE_SIZE = 3
+MIN_RATE_LINE_SIZE = 2
 
 # graph size
-FIG_WIDTH = 1200
-FIG_HEIGHT = 700
+FIG_WIDTH = 900
+FIG_HEIGHT = 400
 
 # main
 if __name__ == "__main__":
