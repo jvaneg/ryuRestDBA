@@ -1,3 +1,8 @@
+# Background
+The code for an SDN controller application that was used to write my undergrad thesis in computer networks and distributed systems. See readme for links to the paper and the poster it was later turned into and published at ICPE2020.
+* Full paper available [here](https://github.com/jvaneg/paperDBA/blob/master/joel_research_paper.pdf).
+* Published version available [here](https://dl.acm.org/doi/10.1145/3375555.3383587).
+
 # Installation
 Note: Requires Ryu be installed in environment to run.
 ```
